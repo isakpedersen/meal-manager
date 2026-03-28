@@ -1,0 +1,29 @@
+/*.root {
+    -fx-base: #2b2b2b;
+    -fx-background: #3c3f41;
+    -fx-accent: #4caf50;
+}
+
+.button {
+    -fx-background-color: #4caf50;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px 16px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #388e3c;
+}
+
+.border-pane {
+    -fx-padding: 10px;
+}*/
+
+.root {
+}
+
+.ingredient-search-confirmed {
+    -fx-background-color: "#EAEEF2";
+    -fx-text-color: "red";
+}
