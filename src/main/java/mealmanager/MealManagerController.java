@@ -260,10 +260,12 @@ public class MealManagerController {
     }
     
     private void handleIngredientSelection() {
-        GroceryItem selected = ingredientSearchList.getSelectionModel().getSelectedItem();
+        GroceryItem selected = getSelectedSuggestion();
         MeasuringUnit unit = selected.getMeasuringUnit();
         ingredientUnitBox.setValue(unit);
         ingredientUnitBox.getItems().setAll(unit.getConvertibleUnits());
+        // select corresponding grocery item in grocery table
+        groceryItemTable.getSelectionModel().select(selected);
     }
 
     private void updateRecipe() {
