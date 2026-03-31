@@ -1,5 +1,6 @@
 package mealmanager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Platform;
@@ -109,6 +110,21 @@ public class MealManagerController {
             List<GroceryItem> filteredSearchList = mealManager.getAvailableGroceryItems().stream()
             .filter(groceryItem -> {
                 return groceryItem.toString().toLowerCase().contains(query.toLowerCase());
+            })
+            .sorted((a, b) -> {
+                // keep lastSelected at the top
+                if (a.equals(lastSelected)) return -1;
+                if (b.equals(lastSelected)) return 1;
+                
+                // then show items that starts with query
+                boolean aStartsWithQuery = a.toString().toLowerCase().startsWith(query.toLowerCase());
+                boolean bStartsWithQuery = b.toString().toLowerCase().startsWith(query.toLowerCase());
+                if (aStartsWithQuery && !bStartsWithQuery) return -1;
+                if (!aStartsWithQuery && bStartsWithQuery) return 1;
+                
+                // sorts alphabetically if both or none of the items starts with query
+                return a.toString().compareTo(b.toString());
+                
             })
             .toList();
             ingredientSearchList.getItems().setAll(filteredSearchList);
