@@ -34,6 +34,9 @@ public class MealManagerController {
 
     @FXML private TextField ingredientSearchField;
     @FXML private ListView<GroceryItem> ingredientSearchList;
+    private int maxSuggestions = 5;
+    private int topIndex = -1;
+    private int bottomIndex = -1;
 
     @FXML private TextField amountField;
     
@@ -94,46 +97,66 @@ public class MealManagerController {
         // Configures listener for ingredient search box
         ingredientSearchField.textProperty().addListener((obs, oldVal, query) -> {
             ingredientSearchField.getStyleClass().remove("ingredient-search-confirmed");
+            
             if (query.isBlank()) {
-                ingredientSearchList.setVisible(false);
+                clearSearch();
                 return;
             };
 
+            GroceryItem lastSelected = getSelectedSuggestion();
+
             // Loads and filters dropdown list
-            List<GroceryItem> filteredGroceryItems = mealManager.getAvailableGroceryItems().stream()
+            List<GroceryItem> filteredSearchList = mealManager.getAvailableGroceryItems().stream()
             .filter(groceryItem -> {
                 return groceryItem.toString().toLowerCase().contains(query.toLowerCase());
             })
             .toList();
-            ingredientSearchList.getItems().setAll(filteredGroceryItems);
-            ingredientSearchList.setPrefHeight(filteredGroceryItems.size() * 42.0 + 2.0);
+            ingredientSearchList.getItems().setAll(filteredSearchList);
+            ingredientSearchList.setPrefHeight(filteredSearchList.size() * 42.0 + 2.0);
             
-            if (!ingredientSearchList.getItems().isEmpty()) {
-                ingredientSearchList.setVisible(true);
+            if (ingredientSearchList.getItems().isEmpty()) {
+                clearSearch();
+                return;
+            }
+
+            if (!filteredSearchList.contains(lastSelected)) {
+                setSelectedSuggestionIndex(0);
             } else {
-                ingredientSearchList.setVisible(false);
+                setSelectedSuggestionIndex(filteredSearchList.indexOf(lastSelected));
             }
-            
-            // Selection of items in list
-            GroceryItem selectedItem = ingredientSearchList.getSelectionModel().getSelectedItem();
-            if (selectedItem == null) {
-                selectedItem = ingredientSearchList.getItems().get(0);
-                ingredientSearchList.getSelectionModel().select(selectedItem);
-            }
+
+            ingredientSearchList.setVisible(true);
+
+            // initializes index of top and bottom item in the visible segment of the list
+            if (topIndex == -1) { topIndex = 0; }
+            bottomIndex = Math.min(ingredientSearchList.getItems().size(), maxSuggestions) - 1;
         });
 
-        // mouse trigger (clicking item in list)
+        // triggers each time selectedItem is changed (only when object itself changes and not just index)
+        ingredientSearchList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            
+        });
+
+        // keyboard triggers
         ingredientSearchField.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.DOWN) {
-                if (ingredientSearchList.getSelectionModel().getSelectedIndex() < ingredientSearchList.getItems().size() - 1) {
+                if (getSelectedSuggestionIndex() < ingredientSearchList.getItems().size() - 1) {
                     ingredientSearchList.getSelectionModel().selectNext();
-                    ingredientSearchList.scrollTo(ingredientSearchList.getSelectionModel().getSelectedIndex() - 4);
+                    if (getSelectedSuggestionIndex() > bottomIndex) {
+                        ingredientSearchList.scrollTo(getSelectedSuggestionIndex() - maxSuggestions + 1);
+                        bottomIndex++;
+                        topIndex++;
+                    }
                 }
                 event.consume();
             } else if (event.getCode() == KeyCode.UP) {
-                if (ingredientSearchList.getSelectionModel().getSelectedIndex() > 0) {
+                if (getSelectedSuggestionIndex() > 0) {
                     ingredientSearchList.getSelectionModel().selectPrevious();
-                    ingredientSearchList.scrollTo(ingredientSearchList.getSelectionModel().getSelectedIndex());
+                    if (getSelectedSuggestionIndex() < topIndex) {
+                        ingredientSearchList.scrollTo(getSelectedSuggestionIndex());
+                        topIndex--;
+                        bottomIndex--;
+                    }
                 }
                 event.consume();
             } else if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.TAB) {
@@ -145,11 +168,13 @@ public class MealManagerController {
             }
         });
 
+        // mouse triggers
+
         // Runs after UI is initialized:
         Platform.runLater(() -> {
             AnchorPane.setTopAnchor(ingredientSearchList, ingredientSearchField.getHeight());
             ingredientSearchList.setPrefWidth(ingredientSearchField.getWidth());
-            ingredientSearchList.setMaxHeight(5 * 42.0 + 2.0);
+            ingredientSearchList.setMaxHeight(maxSuggestions * 42.0 + 2.0);
         });
     }
 
@@ -236,5 +261,24 @@ public class MealManagerController {
         }
         Image image = mealManager.getImage(ean);
         productImage.setImage(image);
+    }
+
+    private GroceryItem getSelectedSuggestion() {
+        return ingredientSearchList.getSelectionModel().getSelectedItem();
+    }
+
+    private int getSelectedSuggestionIndex() {
+        return ingredientSearchList.getSelectionModel().getSelectedIndex();
+    }
+
+    private void setSelectedSuggestionIndex(int index) {
+        ingredientSearchList.getSelectionModel().select(index);
+    }
+
+    private void clearSearch() {
+        ingredientSearchList.setVisible(false);
+        topIndex = -1;
+        bottomIndex = -1;
+        ingredientSearchList.getSelectionModel().clearSelection();
     }
 }
