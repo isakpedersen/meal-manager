@@ -72,23 +72,11 @@ public class MealManagerController {
         });
 
         // Initialize GroceryItemTable
-        // TO DO
-        eanColumn.setCellValueFactory(row -> 
-            new SimpleStringProperty(row.getValue().getEan())
-        );
-        nameColumn.setCellValueFactory(row ->
-            new SimpleStringProperty(row.getValue().getName())
-        );
-        quantityColumn.setCellValueFactory(row ->
-            new SimpleObjectProperty<>(row.getValue().getQuantity())
-        );
-        priceColumn.setCellValueFactory(row ->
-            new SimpleObjectProperty<>(row.getValue().getPrice())
-        );
-        unitPriceColumn.setCellValueFactory(row ->
-            new SimpleObjectProperty<>(row.getValue().getUnitPrice())
-        );
-
+        eanColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getEan()));
+        nameColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getName()));
+        quantityColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(row.getValue().getQuantity()));
+        priceColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(row.getValue().getPrice()));
+        unitPriceColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(row.getValue().getUnitPrice()));
         groceryItemTable.getItems().setAll(mealManager.getAvailableGroceryItems());
 
         // Add image updating listener to rows in table
@@ -176,11 +164,6 @@ public class MealManagerController {
                     setText(null);
                 }
             }
-        });
-
-        // triggers each time selectedItem is changed (only when object itself changes and not just index)
-        ingredientSearchList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            
         });
 
         // keyboard triggers
