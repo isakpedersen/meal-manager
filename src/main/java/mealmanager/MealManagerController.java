@@ -1,6 +1,5 @@
 package mealmanager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Platform;
@@ -11,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -21,6 +21,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 public class MealManagerController {
     private MealManager mealManager = new MealManager();
@@ -38,6 +40,7 @@ public class MealManagerController {
     private int maxSuggestions = 5;
     private int topIndex = -1;
     private int bottomIndex = -1;
+    private String currentQuery = "";
 
     @FXML private TextField amountField;
     
@@ -97,6 +100,7 @@ public class MealManagerController {
 
         // Configures listener for ingredient search box
         ingredientSearchField.textProperty().addListener((obs, oldVal, query) -> {
+            currentQuery = query;
             ingredientSearchField.getStyleClass().remove("ingredient-search-confirmed");
             
             if (query.isBlank()) {
@@ -146,6 +150,32 @@ public class MealManagerController {
             // initializes index of top and bottom item in the visible segment of the list
             if (topIndex == -1) { topIndex = 0; }
             bottomIndex = Math.min(ingredientSearchList.getItems().size(), maxSuggestions) - 1;
+        });
+
+        // Shows matching part of search results in bold
+        ingredientSearchList.setCellFactory(listView -> new ListCell<GroceryItem>() {
+            @Override
+            protected void updateItem(GroceryItem item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    String itemString = item.toString();
+                    int matchStart = itemString.toLowerCase().indexOf(currentQuery.toLowerCase());
+                    int matchEnd = matchStart + currentQuery.length();
+
+                    Text before = new Text(itemString.substring(0, matchStart));
+                    Text match = new Text(itemString.substring(matchStart, matchEnd));
+                    Text after = new Text(itemString.substring(matchEnd));
+                    match.setStyle("-fx-font-weight: bold");
+                    
+                    // Packs text in label to preserve styling
+                    Label label = new Label();
+                    label.setGraphic(new TextFlow(before, match, after));
+                    setGraphic(label);
+                    setText(null);
+                }
+            }
         });
 
         // triggers each time selectedItem is changed (only when object itself changes and not just index)
