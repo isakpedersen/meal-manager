@@ -42,10 +42,6 @@ public class GroceryItem {
         return PriceUtils.round(price);
     }
 
-    public String toInfoString() {
-        return getEan() + " | " + getName() + ", " + getPackageContent() + " " + getMeasuringUnit().toString() + ": " + getPrice() + " kr";
-    }
-
     @Override
     public String toString() {
         return getName();
