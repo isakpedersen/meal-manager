@@ -1,10 +1,12 @@
 package mealmanager;
 
+import java.util.Comparator;
 import java.util.List;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -72,13 +74,15 @@ public class MealManagerController {
             }
         });
 
-        // Initialize GroceryItemTable
+        // Initialize groceryItemTable
         eanColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getEan()));
         nameColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getName()));
         quantityColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(row.getValue().getQuantity()));
         priceColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(row.getValue().getPrice()));
         unitPriceColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(row.getValue().getUnitPrice()));
         groceryItemTable.getItems().setAll(mealManager.getAvailableGroceryItems());
+        // Sort table by nameColumn
+        FXCollections.sort(groceryItemTable.getItems(), Comparator.comparing(GroceryItem::getName));
 
         // Add image updating listener to rows in table
         groceryItemTable.getSelectionModel().selectedItemProperty().addListener(
