@@ -56,6 +56,9 @@ public class FileHandler {
                 }
             }
         }
+        if (recipes.isEmpty()) {
+            recipes.add(new Recipe("Empty recipe", List.of(), 1));
+        }
         return recipes;
     }
 
