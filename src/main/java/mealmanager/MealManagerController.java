@@ -37,9 +37,8 @@ public class MealManagerController {
 
     @FXML private TextField ingredientSearchField;
     @FXML private ListView<GroceryItem> ingredientSearchList;
-    private int maxSuggestions = 5;
-    private int topIndex = -1;
-    private int bottomIndex = -1;
+    private Scroller ingredientDropdownScroller;
+    private static final int MAX_SUGGESTIONS = 5;
     private String currentQuery = "";
 
     @FXML private TextField amountField;
@@ -52,11 +51,13 @@ public class MealManagerController {
     @FXML private TableColumn<GroceryItem, Quantity> quantityColumn;
     @FXML private TableColumn<GroceryItem, Double> priceColumn;
     @FXML private TableColumn<GroceryItem, Double> unitPriceColumn;
+    private static final int MAX_GROCERY_ROWS = 8;
 
     @FXML private ImageView productImage;
 
     @FXML
     public void initialize() {
+        ingredientDropdownScroller = new Scroller(ingredientSearchList, MAX_SUGGESTIONS);
         updateRecipe();
         updateRecipes();
         updateImage();
@@ -135,9 +136,7 @@ public class MealManagerController {
 
             ingredientSearchList.setVisible(true);
 
-            // initializes index of top and bottom item in the visible segment of the list
-            if (topIndex == -1) { topIndex = 0; }
-            bottomIndex = Math.min(ingredientSearchList.getItems().size(), maxSuggestions) - 1;
+            ingredientDropdownScroller.refresh();
         });
 
         // Shows matching part of search results in bold
@@ -169,24 +168,10 @@ public class MealManagerController {
         // keyboard triggers
         ingredientSearchField.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.DOWN) {
-                if (getSelectedSuggestionIndex() < ingredientSearchList.getItems().size() - 1) {
-                    ingredientSearchList.getSelectionModel().selectNext();
-                    if (getSelectedSuggestionIndex() > bottomIndex) {
-                        ingredientSearchList.scrollTo(getSelectedSuggestionIndex() - maxSuggestions + 1);
-                        bottomIndex++;
-                        topIndex++;
-                    }
-                }
+                ingredientDropdownScroller.scrollDown();
                 event.consume();
             } else if (event.getCode() == KeyCode.UP) {
-                if (getSelectedSuggestionIndex() > 0) {
-                    ingredientSearchList.getSelectionModel().selectPrevious();
-                    if (getSelectedSuggestionIndex() < topIndex) {
-                        ingredientSearchList.scrollTo(getSelectedSuggestionIndex());
-                        topIndex--;
-                        bottomIndex--;
-                    }
-                }
+                ingredientDropdownScroller.scrollUp();
                 event.consume();
             } else if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.TAB) {
                 ingredientSearchField.setText(ingredientSearchList.getSelectionModel().getSelectedItem().toString());
@@ -203,7 +188,8 @@ public class MealManagerController {
         Platform.runLater(() -> {
             AnchorPane.setTopAnchor(ingredientSearchList, ingredientSearchField.getHeight());
             ingredientSearchList.setPrefWidth(ingredientSearchField.getWidth());
-            ingredientSearchList.setMaxHeight(maxSuggestions * 42.0 + 2.0);
+            ingredientSearchList.setMaxHeight(ingredientDropdownScroller.getMaxSuggestions() * 42.0 + 2.0);
+            groceryItemTable.setMaxHeight(MAX_GROCERY_ROWS * 42.0 + 40.0);
         });
     }
 
@@ -266,6 +252,7 @@ public class MealManagerController {
         ingredientUnitBox.getItems().setAll(unit.getConvertibleUnits());
         // select corresponding grocery item in grocery table
         groceryItemTable.getSelectionModel().select(selected);
+        groceryItemTable.scrollTo(selected);
     }
 
     private void updateRecipe() {
@@ -298,18 +285,13 @@ public class MealManagerController {
         return ingredientSearchList.getSelectionModel().getSelectedItem();
     }
 
-    private int getSelectedSuggestionIndex() {
-        return ingredientSearchList.getSelectionModel().getSelectedIndex();
-    }
-
     private void setSelectedSuggestionIndex(int index) {
         ingredientSearchList.getSelectionModel().select(index);
     }
 
     private void clearSearch() {
         ingredientSearchList.setVisible(false);
-        topIndex = -1;
-        bottomIndex = -1;
+        ingredientDropdownScroller.reset();
         ingredientSearchList.getSelectionModel().clearSelection();
     }
 }
