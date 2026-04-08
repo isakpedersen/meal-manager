@@ -9,6 +9,9 @@ public class Scroller {
     private int bottomIndex = -1;
 
     public Scroller(ListView<GroceryItem> list, int maxSuggestions) {
+        Validators.validateNotNull(list, "list");
+        Validators.validateIntPositive(maxSuggestions, "maxSuggestions");
+
         this.list = list;
         this.maxSuggestions = maxSuggestions;
     }
@@ -33,10 +36,6 @@ public class Scroller {
                 bottomIndex--;
             }
         }
-    }
-
-    public void scrollTo(int index) {
-
     }
 
     // Initialize index of top and bottom item in the visible segment of the list
