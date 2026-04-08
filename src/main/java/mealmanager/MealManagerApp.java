@@ -1,6 +1,7 @@
 package mealmanager;
 
 import java.io.IOException;
+import java.net.URL;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -23,7 +24,10 @@ public class MealManagerApp extends Application {
         Font.loadFont(getClass().getResourceAsStream("fonts/Inter_18pt-Bold.ttf"), 13);
         Font.loadFont(getClass().getResourceAsStream("fonts/Inter_18pt-Italic.ttf"), 13);
 
-        Scene scene = new Scene(FXMLLoader.load(getClass().getResource("App.fxml")));
+        URL fxmlUrl = getClass().getResource("App.fxml");
+        if (fxmlUrl == null) throw new IllegalStateException("App.fxml not found");
+        Scene scene = new Scene(FXMLLoader.load(fxmlUrl));
+
         primaryStage.setTitle("Meal Manager");
         scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
         primaryStage.setScene(scene);
