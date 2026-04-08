@@ -69,7 +69,6 @@ public class MealManager {
     }
 
     public Image getImage(String ean) {
-        Validators.validateEan(ean);
         return imageService.getImage(ean);
     }
 
