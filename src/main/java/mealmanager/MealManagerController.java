@@ -63,7 +63,6 @@ public class MealManagerController {
         ingredientDropdownScroller = new Scroller(ingredientSearchList, MAX_SUGGESTIONS);
         updateRecipe();
         updateRecipes();
-        updateImage();
     
         ingredientList.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.DELETE) {
@@ -84,6 +83,8 @@ public class MealManagerController {
         groceryItemTable.getItems().setAll(mealManager.getAvailableGroceryItems());
         // Sort table by name column
         FXCollections.sort(groceryItemTable.getItems(), Comparator.comparing(GroceryItem::getName));
+        groceryItemTable.getSelectionModel().select(groceryItemTable.getItems().get(0));
+        updateImage();
 
         // Update product image when selecting grocery items 
         groceryItemTable.getSelectionModel().selectedItemProperty().addListener(
