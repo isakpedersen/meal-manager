@@ -5,6 +5,8 @@ public class Quantity {
     private final MeasuringUnit unit;
 
     public Quantity(double amount, MeasuringUnit unit) {
+        Validators.validateDoublePositive(amount, "amount");
+
         this.amount = amount;
         this.unit = unit;
     }
