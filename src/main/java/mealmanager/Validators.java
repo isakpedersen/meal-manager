@@ -11,6 +11,10 @@ public class Validators {
     if (value <= 0) throw new IllegalArgumentException(fieldName + " cannot be negative or zero");
     }
 
+    public static void validateIntPositive(int value, String fieldName) {
+        if (value <= 0) throw new IllegalArgumentException(fieldName + " cannot be negative or zero");
+    }
+
     public static void validateNotNull(Object object, String fieldName) {
         if (object == null) throw new IllegalArgumentException(fieldName + " cannot be null");
     }

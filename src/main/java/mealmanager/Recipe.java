@@ -10,13 +10,11 @@ public class Recipe {
 
     public Recipe(String name, List<Ingredient> ingredients, int servings) {
         Validators.validateString(name, "name");
+        Validators.validateIntPositive(servings, "servings");
+        if (ingredients != null && ingredients.contains(null)) throw new IllegalArgumentException("ingredients cannot contain null elements");
 
         this.name = name;
-        if (ingredients != null) {
-            this.ingredients = new ArrayList<>(ingredients);
-        } else {
-            this.ingredients = new ArrayList<>();
-        }
+        this.ingredients = ingredients != null ? new ArrayList<>(ingredients) : new ArrayList<>();
         this.servings = servings;
     }
 
@@ -34,11 +32,12 @@ public class Recipe {
     }
 
     public void setName(String name) {
+        Validators.validateString(name, "name");
         this.name = name;
     }
 
     public List<Ingredient> getIngredients() {
-        return ingredients;
+        return new ArrayList<>(ingredients);
     }
 
     public int getServings() {
