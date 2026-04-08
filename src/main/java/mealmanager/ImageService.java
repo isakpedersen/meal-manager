@@ -9,10 +9,12 @@ public class ImageService {
     private static final String PLACEHOLDER_URL = "/mealmanager/images/placeholder.jpg";
         
     public Image getImage(String ean) {
+        Validators.validateEan(ean);
         String url = PRODUCT_IMAGES + ean + ".jpg";
         InputStream is = getClass().getResourceAsStream(url);
         if (is == null) {
             is = getClass().getResourceAsStream(PLACEHOLDER_URL);
+            if (is == null) throw new IllegalStateException("Placeholder image not found: " + PLACEHOLDER_URL);
         }
         return new Image(is);
     }

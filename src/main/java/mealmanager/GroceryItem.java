@@ -7,7 +7,7 @@ public class GroceryItem {
     private double price;
 
     public GroceryItem(String ean, String name, double packageContent, MeasuringUnit measuringUnit, double price) {
-        validateEan(ean);
+        Validators.validateEan(ean);
         validateName(name);
         validateDoublePositive(packageContent, "packageContent");
         validateDoublePositive(price, "price");
@@ -16,11 +16,6 @@ public class GroceryItem {
         this.name = name;
         this.quantity = new Quantity(packageContent, measuringUnit);
         this.price = price;
-    }
-
-    private static void validateEan(String ean) {
-        if (ean == null) throw new IllegalArgumentException("EAN cannot be null");
-        if (!ean.matches("[0-9]{8}|[0-9]{13}")) throw new IllegalArgumentException("EAN must only consist of digits (8 or 13)");
     }
 
     private static void validateName(String name) {
