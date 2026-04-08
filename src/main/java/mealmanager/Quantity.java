@@ -21,6 +21,9 @@ public class Quantity {
 
     @Override
     public String toString() {
-        return (amount + " " + unit);
+        if (getUnit() == MeasuringUnit.STK && getAmount() % 1 == 0) {
+            return String.format("%.0f", amount) + " " + unit;
+        }
+        return String.format("%.2f", amount) + " " + unit;
     }
 }

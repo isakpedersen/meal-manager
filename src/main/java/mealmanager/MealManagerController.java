@@ -53,8 +53,8 @@ public class MealManagerController {
     @FXML private TableColumn<GroceryItem, String> eanColumn;
     @FXML private TableColumn<GroceryItem, String> nameColumn;
     @FXML private TableColumn<GroceryItem, Quantity> quantityColumn;
-    @FXML private TableColumn<GroceryItem, Double> priceColumn;
-    @FXML private TableColumn<GroceryItem, Double> unitPriceColumn;
+    @FXML private TableColumn<GroceryItem, String> priceColumn;
+    @FXML private TableColumn<GroceryItem, String> unitPriceColumn;
 
     @FXML private ImageView productImage;
 
@@ -78,8 +78,8 @@ public class MealManagerController {
         eanColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getEan()));
         nameColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getName()));
         quantityColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(row.getValue().getQuantity()));
-        priceColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(row.getValue().getPrice()));
-        unitPriceColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(row.getValue().getUnitPrice(true)));
+        priceColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getPriceString()));
+        unitPriceColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getUnitPriceString()));
         groceryItemTable.getItems().setAll(mealManager.getAvailableGroceryItems());
         // Sort table by name column
         FXCollections.sort(groceryItemTable.getItems(), Comparator.comparing(GroceryItem::getName));

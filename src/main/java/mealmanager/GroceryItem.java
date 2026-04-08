@@ -25,6 +25,21 @@ public class GroceryItem {
         return getPrice() / getPackageContent();
     }
 
+    public String getUnitPriceString() {
+        double unitPrice = getUnitPrice(true);
+        MeasuringUnit unit = getMeasuringUnit();
+
+        if (MeasuringUnit.KG.getConvertibleUnits().contains(unit)) {
+            unitPrice *= MeasuringUnit.KG.getConversionFactor(unit);
+            unit = MeasuringUnit.KG;
+        } else if (MeasuringUnit.LITER.getConvertibleUnits().contains(unit)) {
+            unitPrice *= MeasuringUnit.LITER.getConversionFactor(unit);
+            unit = MeasuringUnit.LITER;
+        }
+
+        return String.format("%.2f", unitPrice) + " kr/" + unit;
+    }
+
     public String getEan() {
         return ean;
     }
@@ -36,17 +51,21 @@ public class GroceryItem {
     public Quantity getQuantity() {
         return quantity;
     }
-    
+
     public double getPackageContent() {
         return quantity.getAmount();
     }
-    
+
     public MeasuringUnit getMeasuringUnit() {
         return quantity.getUnit();
     }
-    
+
     public double getPrice() {
         return PriceUtils.round(price);
+    }
+
+    public String getPriceString() {
+        return String.format("%.2f", getPrice()) + " kr";
     }
 
     @Override
