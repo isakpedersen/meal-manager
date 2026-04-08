@@ -5,12 +5,16 @@ import java.util.List;
 
 public class Recipe {
     private String name;
-    private List<Ingredient> ingredients = new ArrayList<>();
+    private List<Ingredient> ingredients;
     private int servings;
 
     public Recipe(String name, List<Ingredient> ingredients, int servings) {
-        setName(name);
-        this.ingredients = ingredients;
+        this.name = name;
+        if (ingredients != null) {
+            this.ingredients = new ArrayList<>(ingredients);
+        } else {
+            this.ingredients = new ArrayList<>();
+        }
         this.servings = servings;
     }
 

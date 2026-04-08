@@ -13,7 +13,6 @@ public class Scroller {
         this.maxSuggestions = maxSuggestions;
     }
 
-
     public void scrollDown() {
         if (list.getSelectionModel().getSelectedIndex() < list.getItems().size() - 1) {
             list.getSelectionModel().selectNext();
@@ -40,7 +39,7 @@ public class Scroller {
 
     }
 
-    // initializes index of top and bottom item in the visible segment of the list
+    // Initialize index of top and bottom item in the visible segment of the list
     public void refresh() {
         if (topIndex == -1) { topIndex = 0; }
         bottomIndex = Math.min(list.getItems().size(), maxSuggestions) - 1;

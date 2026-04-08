@@ -10,12 +10,7 @@ public class MealManager {
     private final FileHandler fileHandler = new FileHandler();
     private final ImageService imageService = new ImageService();
 
-    // temporary recipes
-    //private Recipe testRecipe = new Recipe("Carb recipe", new ArrayList<>(List.of(new Ingredient(availableGroceryItems.get(0), 200.), new Ingredient(rice,100.))), 1);
-    //private Recipe testRecipe2 = new Recipe("Veggie recipe", new ArrayList<>(List.of(new Ingredient(broccoli, 200.), new Ingredient(zucchini,100.))), 1);
-    
     private List<GroceryItem> availableGroceryItems;
-    //private List<Recipe> recipes = new ArrayList<>(List.of(testRecipe, testRecipe2));
     private List<Recipe> recipes;
     private Recipe currentRecipe;
 

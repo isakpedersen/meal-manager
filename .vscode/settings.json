@@ -4,6 +4,5 @@
     "java.debug.settings.console": "internalConsole",
     "github.copilot.enable": {
         "*": false
-    }
-  }
-  
+    },
+}

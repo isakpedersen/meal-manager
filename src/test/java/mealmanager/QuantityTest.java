@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 public class QuantityTest {
+
     @Test
     public void testConstructor() {
         Quantity quantity = new Quantity(100, MeasuringUnit.GRAM);

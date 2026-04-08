@@ -22,7 +22,7 @@ public enum MeasuringUnit {
         DL.conversionMap.putAll(Map.of(ML, 100.0, LITER, 0.1));
         LITER.conversionMap.putAll(Map.of(ML, 1000.0, DL, 100.0));
 
-        // adds all units to its own conversionMap with a factor 1.
+        // Add all units to its own conversionMap with a factor 1.
         for (MeasuringUnit unit : MeasuringUnit.values()) {
             unit.conversionMap.put(unit, 1.0);
         }

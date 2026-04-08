@@ -4,7 +4,6 @@ public class GroceryItem {
     private final String ean;
     private final String name;
     private final Quantity quantity;
-    
     private double price;
 
     public GroceryItem(String ean, String name, double packageContent, MeasuringUnit measuringUnit, double price) {
@@ -14,8 +13,11 @@ public class GroceryItem {
         this.price = price;
     }
 
-    public double getUnitPrice() {
-        return PriceUtils.round(getPrice() / getPackageContent());
+    public double getUnitPrice(Boolean round) {
+        if (round) {
+            return PriceUtils.round(getPrice() / getPackageContent());
+        }
+        return getPrice() / getPackageContent();
     }
 
     public String getEan() {

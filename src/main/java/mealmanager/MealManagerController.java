@@ -27,6 +27,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 public class MealManagerController {
+    private static final int MAX_SUGGESTIONS = 5;
+    private static final int MAX_GROCERY_ROWS = 8;
+
     private MealManager mealManager = new MealManager();
 
     @FXML private ComboBox<Recipe> recipeBox;
@@ -40,7 +43,6 @@ public class MealManagerController {
     @FXML private TextField ingredientSearchField;
     @FXML private ListView<GroceryItem> ingredientSearchList;
     private Scroller ingredientDropdownScroller;
-    private static final int MAX_SUGGESTIONS = 5;
     private String currentQuery = "";
 
     @FXML private TextField amountField;
@@ -53,7 +55,6 @@ public class MealManagerController {
     @FXML private TableColumn<GroceryItem, Quantity> quantityColumn;
     @FXML private TableColumn<GroceryItem, Double> priceColumn;
     @FXML private TableColumn<GroceryItem, Double> unitPriceColumn;
-    private static final int MAX_GROCERY_ROWS = 8;
 
     @FXML private ImageView productImage;
 
@@ -74,24 +75,24 @@ public class MealManagerController {
             }
         });
 
-        // Initialize groceryItemTable
+        // Initialize grocery item table
         eanColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getEan()));
         nameColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getName()));
         quantityColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(row.getValue().getQuantity()));
         priceColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(row.getValue().getPrice()));
-        unitPriceColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(row.getValue().getUnitPrice()));
+        unitPriceColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(row.getValue().getUnitPrice(true)));
         groceryItemTable.getItems().setAll(mealManager.getAvailableGroceryItems());
-        // Sort table by nameColumn
+        // Sort table by name column
         FXCollections.sort(groceryItemTable.getItems(), Comparator.comparing(GroceryItem::getName));
 
-        // Add image updating listener to rows in table
+        // Update product image when selecting grocery items 
         groceryItemTable.getSelectionModel().selectedItemProperty().addListener(
             (obs, oldVal, newVal) -> {
                 if (newVal != null && newVal != oldVal) updateImage();
             }
         );
 
-        // Configures listener for ingredient search box
+        // Configure listener for ingredient search box
         ingredientSearchField.textProperty().addListener((obs, oldVal, query) -> {
             currentQuery = query;
             ingredientSearchField.getStyleClass().remove("ingredient-search-confirmed");
@@ -103,23 +104,23 @@ public class MealManagerController {
 
             GroceryItem lastSelected = getSelectedSuggestion();
 
-            // Loads and filters dropdown list
+            // Load and filter dropdown list
             List<GroceryItem> filteredSearchList = mealManager.getAvailableGroceryItems().stream()
             .filter(groceryItem -> {
                 return groceryItem.toString().toLowerCase().contains(query.toLowerCase());
             })
             .sorted((a, b) -> {
-                // keep lastSelected at the top
+                // Keep lastSelected at the top
                 if (a.equals(lastSelected)) return -1;
                 if (b.equals(lastSelected)) return 1;
                 
-                // then show items that starts with query
+                // Then show items that starts with query
                 boolean aStartsWithQuery = a.toString().toLowerCase().startsWith(query.toLowerCase());
                 boolean bStartsWithQuery = b.toString().toLowerCase().startsWith(query.toLowerCase());
                 if (aStartsWithQuery && !bStartsWithQuery) return -1;
                 if (!aStartsWithQuery && bStartsWithQuery) return 1;
                 
-                // sorts alphabetically if both or none of the items starts with query
+                // Sort alphabetically if both or none of the items starts with query
                 return a.toString().compareTo(b.toString());
                 
             })
@@ -143,7 +144,7 @@ public class MealManagerController {
             ingredientDropdownScroller.refresh();
         });
 
-        // Shows matching part of search results in bold
+        // Highlight query text in suggestions in bold
         ingredientSearchList.setCellFactory(listView -> new ListCell<GroceryItem>() {
             @Override
             protected void updateItem(GroceryItem item, boolean empty) {
@@ -160,7 +161,7 @@ public class MealManagerController {
                     Text after = new Text(itemString.substring(matchEnd));
                     match.setStyle("-fx-font-weight: bold");
                     
-                    // Packs text in label to preserve styling
+                    // Pack text in label to preserve css styling
                     Label label = new Label();
                     label.setGraphic(new TextFlow(before, match, after));
                     setGraphic(label);
@@ -169,7 +170,7 @@ public class MealManagerController {
             }
         });
 
-        // keyboard triggers
+        // Keyboard triggers
         ingredientSearchField.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.DOWN) {
                 ingredientDropdownScroller.scrollDown();
@@ -186,9 +187,9 @@ public class MealManagerController {
             }
         });
 
-        // mouse triggers
+        // Mouse triggers
 
-        // Runs after UI is initialized:
+        // Run after UI is initialized:
         Platform.runLater(() -> {
             AnchorPane.setTopAnchor(ingredientSearchList, ingredientSearchField.getHeight());
             ingredientSearchList.setPrefWidth(ingredientSearchField.getWidth());
@@ -213,7 +214,6 @@ public class MealManagerController {
         dialog.showAndWait().ifPresent(name -> {
             mealManager.createNewRecipe(name);
         });
-
         updateRecipe();
         updateRecipes();
     }
@@ -239,7 +239,7 @@ public class MealManagerController {
         GroceryItem selectedItem = ingredientSearchList.getSelectionModel().getSelectedItem();
         Double amountInCorrectUnit = Double.parseDouble(amountField.getText()) * ingredientUnitBox.getValue().getConversionFactor(selectedItem.getMeasuringUnit());
         Ingredient ingredient = new Ingredient(selectedItem, amountInCorrectUnit);
-        
+
         mealManager.addIngredientToCurrentRecipe(ingredient);
         updateRecipe();
     }
