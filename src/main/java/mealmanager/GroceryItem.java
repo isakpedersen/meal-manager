@@ -7,13 +7,31 @@ public class GroceryItem {
     private double price;
 
     public GroceryItem(String ean, String name, double packageContent, MeasuringUnit measuringUnit, double price) {
+        validateEan(ean);
+        validateName(name);
+        validateDoublePositive(packageContent, "packageContent");
+        validateDoublePositive(price, "price");
+
         this.ean = ean;
         this.name = name;
         this.quantity = new Quantity(packageContent, measuringUnit);
         this.price = price;
     }
 
-    public double getUnitPrice(Boolean round) {
+    private static void validateEan(String ean) {
+        if (ean == null) throw new IllegalArgumentException("EAN cannot be null");
+        if (!ean.matches("[0-9]{8}|[0-9]{13}")) throw new IllegalArgumentException("EAN must only consist of digits (8 or 13)");
+    }
+
+    private static void validateName(String name) {
+        if (name == null || name.isBlank()) throw new IllegalArgumentException("name cannot be null or blank");
+    }
+
+    private static void validateDoublePositive(double value, String fieldName) {
+        if (value <= 0) throw new IllegalArgumentException(fieldName + " cannot be negative or zero");
+    }
+
+    public double getUnitPrice(boolean round) {
         if (round) {
             return PriceUtils.round(getPrice() / getPackageContent());
         }
