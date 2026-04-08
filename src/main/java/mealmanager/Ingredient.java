@@ -5,8 +5,15 @@ public class Ingredient {
     private Quantity quantity;
 
     public Ingredient(GroceryItem item, double amount) {
+        validateItem(item);
+        Validators.validateDoublePositive(amount, "amount");
+
         this.item = item;
         this.quantity = new Quantity(amount, item.getMeasuringUnit());
+    }
+
+    private static void validateItem(GroceryItem item) {
+        if (item == null) throw new IllegalArgumentException("item cannot be null");
     }
 
     public double getPrice() {
