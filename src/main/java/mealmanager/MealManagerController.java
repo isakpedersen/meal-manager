@@ -291,6 +291,7 @@ public class MealManagerController {
     }
 
     private void setSelectedSuggestionIndex(int index) {
+        if (index < 0 || index >= ingredientSearchList.getItems().size()) throw new IndexOutOfBoundsException("Index out of bounds: " + index);
         ingredientSearchList.getSelectionModel().select(index);
     }
 
