@@ -8,7 +8,7 @@ public class GroceryItem {
 
     public GroceryItem(String ean, String name, double packageContent, MeasuringUnit measuringUnit, double price) {
         Validators.validateEan(ean);
-        validateName(name);
+        Validators.validateString(name, "name");
         Validators.validateDoublePositive(packageContent, "packageContent");
         Validators.validateDoublePositive(price, "price");
 
@@ -16,10 +16,6 @@ public class GroceryItem {
         this.name = name;
         this.quantity = new Quantity(packageContent, measuringUnit);
         this.price = price;
-    }
-
-    private static void validateName(String name) {
-        if (name == null || name.isBlank()) throw new IllegalArgumentException("name cannot be null or blank");
     }
 
     public double getUnitPrice(boolean round) {

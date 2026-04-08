@@ -69,11 +69,12 @@ public class MealManager {
     }
 
     public Image getImage(String ean) {
+        Validators.validateEan(ean);
         return imageService.getImage(ean);
     }
 
     public Recipe getRecipe(int index) {
-        if (index < 0 || index >= recipes.size()) throw new IndexOutOfBoundsException("Invalid index");
+        if (index < 0 || index >= recipes.size()) throw new IndexOutOfBoundsException("Index out of bounds: " + index);
         return recipes.get(index);
     }
 
@@ -86,6 +87,7 @@ public class MealManager {
     }
 
     public void setCurrentRecipe(Recipe recipe) {
+        Validators.validateNotNull(recipe, "recipe");
         this.currentRecipe = recipe;
     }
 }

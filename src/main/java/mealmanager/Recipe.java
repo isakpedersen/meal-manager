@@ -9,6 +9,8 @@ public class Recipe {
     private int servings;
 
     public Recipe(String name, List<Ingredient> ingredients, int servings) {
+        Validators.validateString(name, "name");
+
         this.name = name;
         if (ingredients != null) {
             this.ingredients = new ArrayList<>(ingredients);
@@ -19,6 +21,7 @@ public class Recipe {
     }
 
     public void addIngredient(Ingredient ingredient) {
+        Validators.validateNotNull(ingredient, "ingredient");
         ingredients.add(ingredient);
     }
 

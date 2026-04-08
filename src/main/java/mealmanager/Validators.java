@@ -10,4 +10,12 @@ public class Validators {
     public static void validateDoublePositive(double value, String fieldName) {
     if (value <= 0) throw new IllegalArgumentException(fieldName + " cannot be negative or zero");
     }
+
+    public static void validateNotNull(Object object, String fieldName) {
+        if (object == null) throw new IllegalArgumentException(fieldName + " cannot be null");
+    }
+
+    public static void validateString(String string, String fieldName) {
+        if (string == null || string.isBlank()) throw new IllegalArgumentException(fieldName + " cannot be null or blank");
+    }
 }
