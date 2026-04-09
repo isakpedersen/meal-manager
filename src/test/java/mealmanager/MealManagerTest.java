@@ -21,8 +21,8 @@ public class MealManagerTest {
     @BeforeEach
     public void setUp() {
         mealManager = new MealManager();
-        pasta = new GroceryItem("1", "Pasta", 500,MeasuringUnit.GRAM, 10);
-        rice = new GroceryItem("2", "Rice", 1000, MeasuringUnit.GRAM, 15);
+        pasta = new GroceryItem("0000000000001", "Pasta", 500,MeasuringUnit.GRAM, 10);
+        rice = new GroceryItem("0000000000002", "Rice", 1000, MeasuringUnit.GRAM, 15);
         pastaIngredient = new Ingredient(pasta, 100);
         riceIngredient = new Ingredient(rice, 100);
     }

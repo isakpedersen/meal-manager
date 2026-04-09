@@ -34,8 +34,8 @@ public class FileHandler {
     }
 
     public List<Recipe> loadRecipes(List<GroceryItem> availableGroceryItems) throws IOException {
-        if (availableGroceryItems == null) { throw new IllegalArgumentException("availableGroceryItems cannot be null"); }
-        if (availableGroceryItems.contains(null)) { throw new IllegalArgumentException("availableGroceryItems cannot contain null elements"); }
+        if (availableGroceryItems == null) throw new IllegalArgumentException("availableGroceryItems cannot be null");
+        if (availableGroceryItems.contains(null)) throw new IllegalArgumentException("availableGroceryItems cannot contain null elements");
         List<Recipe> recipes = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(RECIPE_FILE))) {
             String line;
@@ -68,8 +68,8 @@ public class FileHandler {
     }
 
     public void saveRecipes(List<Recipe> recipes) throws IOException {
-        if (recipes == null) { throw new IllegalArgumentException("recipes cannot be null"); }
-        if (recipes.contains(null)) { throw new IllegalArgumentException("recipes cannot contain null elements"); }
+        if (recipes == null) throw new IllegalArgumentException("recipes cannot be null");
+        if (recipes.contains(null)) throw new IllegalArgumentException("recipes cannot contain null elements");
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(RECIPE_FILE))) {
             for (Recipe recipe : recipes) {
                 writer.write("RECIPE:" + recipe.getName() + ":" + recipe.getServings() + "\n");

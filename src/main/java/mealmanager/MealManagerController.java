@@ -52,6 +52,11 @@ public class MealManagerController {
     
     @FXML private ComboBox<MeasuringUnit> ingredientUnitBox;
 
+    @FXML private TableView<GroceryItem> shoppingListTable;
+    @FXML private TableColumn<GroceryItem, String> shoppingItemNameColumn;
+    @FXML private TableColumn<GroceryItem, Integer> shoppingItemPackagesColumn;
+    @FXML private TableColumn<GroceryItem, Double> shoppingItemActualPackagesColumn;
+
     @FXML private TableView<GroceryItem> groceryItemTable;
     @FXML private TableColumn<GroceryItem, String> eanColumn;
     @FXML private TableColumn<GroceryItem, String> nameColumn;
@@ -76,6 +81,11 @@ public class MealManagerController {
                 }
             }
         });
+
+        // Initialize shopping list table
+        shoppingItemNameColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getName()));
+        shoppingItemPackagesColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(mealManager.getShoppingList().get(row.getValue())));
+        shoppingItemActualPackagesColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(mealManager.getActualPackages(row.getValue())));
 
         // Initialize grocery item table
         eanColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getEan()));
@@ -274,11 +284,16 @@ public class MealManagerController {
         mealManager.saveRecipes();
         ingredientList.scrollTo(ingredientList.getItems().size() - 1);
         ingredientList.getSelectionModel().select(ingredientList.getItems().size() - 1);
+        updateShoppingList();
     }
 
     private void updateRecipes() {
         recipeBox.getItems().setAll(mealManager.getRecipes());
         mealManager.saveRecipes();
+    }
+
+    private void updateShoppingList() {
+        shoppingListTable.getItems().setAll(mealManager.getShoppingList().keySet());
     }
 
     private void updateImage() {

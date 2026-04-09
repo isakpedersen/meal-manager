@@ -21,6 +21,11 @@
 }*/
 
 .root {
+    -fx-padding: 16px;
+}
+
+.content-pane {
+    -fx-padding: 16px 20px;
 }
 
 .ingredient-search-confirmed {

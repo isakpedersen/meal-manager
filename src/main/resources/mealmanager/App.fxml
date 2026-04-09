@@ -16,6 +16,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mealmanager.MealManagerController">
   <top>
@@ -25,58 +26,72 @@
   </top>
 
   <center>
-    <HBox spacing="20">
-      <padding>
-        <Insets top="16" right="24" bottom="16" left="24"/>
-      </padding>
-      <VBox spacing="10" HBox.hgrow="ALWAYS">
-        <Label fx:id="currentRecipeLabel" styleClass="" />
-        <HBox>
-          <ComboBox fx:id="recipeBox" onAction="#handleRecipeSelection"/>
-          <Button fx:id="createNewRecipeButton" onAction="#createNewRecipe" text="Lag ny oppskrift"/>
-          <Button fx:id="deleteRecipeButton" onAction="#deleteCurrentRecipe" text="Slett oppskrift"/>
-        </HBox>
-        <ListView fx:id="ingredientList"/>
-        <HBox>
-          <Label text="Totalpris:"/>
-          <Label fx:id="totalPriceLabel"/>
-        </HBox>
-        <Label text="Legg til ingrediens:"/>
-        <HBox>
-          <AnchorPane prefWidth="250.0">
-            <TextField fx:id="ingredientSearchField" promptText="Søk etter ingrediens..." AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
-            <ListView fx:id="ingredientSearchList" visible="false" AnchorPane.topAnchor="30.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
-          </AnchorPane>
-          <TextField fx:id="amountField" onAction="#addIngredientToCurrentRecipe"/>
-          <ComboBox fx:id="ingredientUnitBox" onAction="#handleUnitSelection"/>
-          <Button fx:id="addIngredientButton" onAction="#addIngredientToCurrentRecipe" text="Legg til"/>
-        </HBox>
-      </VBox>
-      <Separator orientation="VERTICAL" />
-      <VBox prefWidth="800">
-        <Label styleClass="title-3" text="Matvarer" />
-        <VBox prefHeight="400" prefWidth="400.0" alignment="CENTER" VBox.vgrow="ALWAYS">
-          <padding>
-            <Insets top="50.0"/>
-          </padding>
-          <ImageView fx:id="productImage" fitWidth="200.0" fitHeight="200.0" preserveRatio="true"/>
+    <SplitPane dividerPositions="0.45, 0.55">
+      <items>
+        <VBox styleClass="content-pane" spacing="10" HBox.hgrow="ALWAYS">
+          <Label styleClass="title-3" text="Oppskrifter" />
+          <Label fx:id="currentRecipeLabel" styleClass="" />
+          <HBox>
+            <ComboBox fx:id="recipeBox" onAction="#handleRecipeSelection"/>
+            <Button fx:id="createNewRecipeButton" onAction="#createNewRecipe" text="Lag ny oppskrift"/>
+            <Button fx:id="deleteRecipeButton" onAction="#deleteCurrentRecipe" text="Slett oppskrift"/>
+          </HBox>
+          <ListView fx:id="ingredientList"/>
+          <HBox>
+            <Label text="Totalpris:"/>
+            <Label fx:id="totalPriceLabel"/>
+          </HBox>
+          <Label text="Legg til ingrediens:"/>
+          <HBox>
+            <AnchorPane prefWidth="250.0">
+              <TextField fx:id="ingredientSearchField" promptText="Søk etter ingrediens..." AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
+              <ListView fx:id="ingredientSearchList" visible="false" AnchorPane.topAnchor="30.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
+            </AnchorPane>
+            <TextField fx:id="amountField" onAction="#addIngredientToCurrentRecipe"/>
+            <ComboBox fx:id="ingredientUnitBox" onAction="#handleUnitSelection"/>
+            <Button fx:id="addIngredientButton" onAction="#addIngredientToCurrentRecipe" text="Legg til"/>
+          </HBox>
         </VBox>
-          <padding>
-            <Insets bottom="35.0"/>
-          </padding>
-        <TableView fx:id="groceryItemTable" prefWidth="740.0" maxHeight="400.0">
-          <columns>
-            <TableColumn fx:id="eanColumn" prefWidth="180.0" text="EAN"/>
-            <TableColumn fx:id="nameColumn" prefWidth="160.0" text="Navn"/>
-            <TableColumn fx:id="quantityColumn" prefWidth="140.0" text="Mengde per pk."/>
-            <TableColumn fx:id="priceColumn" prefWidth="140.0" text="Pris per pk."/>
-            <TableColumn fx:id="unitPriceColumn" prefWidth="140.0" text="Enhetspris"/>
-          </columns>
-          <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-          </columnResizePolicy>
-        </TableView>
-      </VBox>
-    </HBox>
+        <VBox styleClass="content-pane" spacing="10">
+          <Label styleClass="title-3" text="Handleliste" />
+          <Label text="Totalpris:"/>
+          <Label fx:id="totalShoppingListPriceLabel"/>
+          <TableView fx:id="shoppingListTable" fixedCellSize="42" >
+            <columns>
+              <TableColumn fx:id="shoppingItemNameColumn" text="Vare" />
+              <TableColumn fx:id="shoppingItemPackagesColumn" text="Antall pk." />
+              <TableColumn fx:id="shoppingItemActualPackagesColumn" text="Faktisk brukte pk." />
+            </columns>
+            <columnResizePolicy>
+              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+          </TableView>
+        </VBox>
+        <VBox styleClass="content-pane" prefWidth="800">
+          <Label styleClass="title-3" text="Tilgjengelige matvarer" />
+          <VBox prefHeight="400" prefWidth="400.0" alignment="CENTER" VBox.vgrow="ALWAYS">
+            <padding>
+              <Insets top="50.0"/>
+            </padding>
+            <ImageView fx:id="productImage" fitWidth="200.0" fitHeight="200.0" preserveRatio="true"/>
+          </VBox>
+            <padding>
+              <Insets bottom="35.0"/>
+            </padding>
+          <TableView fx:id="groceryItemTable" prefWidth="740.0" maxHeight="400.0">
+            <columns>
+              <TableColumn fx:id="eanColumn" prefWidth="180.0" text="EAN"/>
+              <TableColumn fx:id="nameColumn" prefWidth="160.0" text="Navn"/>
+              <TableColumn fx:id="quantityColumn" prefWidth="140.0" text="Mengde per pk."/>
+              <TableColumn fx:id="priceColumn" prefWidth="140.0" text="Pris per pk."/>
+              <TableColumn fx:id="unitPriceColumn" prefWidth="140.0" text="Enhetspris"/>
+            </columns>
+            <columnResizePolicy>
+              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+          </TableView>
+        </VBox>
+      </items>
+    </SplitPane>
   </center>
 </BorderPane>

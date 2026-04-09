@@ -20,7 +20,7 @@ public class GroceryItem {
 
     public double getUnitPrice(boolean round) {
         if (round) {
-            return PriceUtils.round(getPrice() / getPackageContent());
+            return MathUtils.round(getPrice() / getPackageContent());
         }
         return getPrice() / getPackageContent();
     }
@@ -61,7 +61,7 @@ public class GroceryItem {
     }
 
     public double getPrice() {
-        return PriceUtils.round(price);
+        return MathUtils.round(price);
     }
 
     public String getPriceString() {

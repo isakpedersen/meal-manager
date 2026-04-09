@@ -17,7 +17,7 @@ public class Ingredient {
     }
 
     public double getPrice() {
-        return PriceUtils.round(item.getUnitPrice(false) * getAmount());
+        return MathUtils.round(item.getUnitPrice(false) * getAmount());
     }
 
     public GroceryItem getGroceryItem() {

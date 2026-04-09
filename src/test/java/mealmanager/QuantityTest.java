@@ -16,6 +16,6 @@ public class QuantityTest {
     @Test
     public void testToString() {
         Quantity quantity = new Quantity(100, MeasuringUnit.GRAM);
-        assertEquals("100.0 g", quantity.toString());
+        assertEquals("100.00 g", quantity.toString());
     }
 }

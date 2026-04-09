@@ -3,12 +3,14 @@ package mealmanager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javafx.scene.image.Image;
 
 public class MealManager {
     private final FileHandler fileHandler = new FileHandler();
     private final ImageService imageService = new ImageService();
+    private ShoppingList shoppingList = new ShoppingList();
 
     private List<GroceryItem> availableGroceryItems;
     private List<Recipe> recipes;
@@ -22,6 +24,12 @@ public class MealManager {
             return;
         }
         setCurrentRecipe(recipes.get(0));
+
+        for (Recipe recipe : recipes) {
+            for (Ingredient ingredient : recipe.getIngredients()) {
+                shoppingList.addIngredient(ingredient);
+            }
+        }
     }
 
     public void saveRecipes() {
@@ -35,13 +43,15 @@ public class MealManager {
     public List<Ingredient> getCurrentIngredients() {
         return getCurrentRecipe().getIngredients();
     }
-    
+
     public void addIngredientToCurrentRecipe(Ingredient ingredient) {
         getCurrentRecipe().addIngredient(ingredient);
+        shoppingList.addIngredient(ingredient);
     }
 
     public void removeIngredientFromCurrentRecipe(Ingredient ingredient) {
         getCurrentRecipe().removeIngredient(ingredient);
+        shoppingList.removeIngredient(ingredient);
     }
 
     public void createNewRecipe(String name) {
@@ -51,6 +61,9 @@ public class MealManager {
     }
 
     public void deleteCurrentRecipe() {
+        for (Ingredient ingredient : getCurrentRecipe().getIngredients()) {
+            removeIngredientFromCurrentRecipe(ingredient);
+        }
         recipes.remove(getCurrentRecipe());
         setCurrentRecipe(getRecipe(0));
         saveRecipes();
@@ -61,7 +74,7 @@ public class MealManager {
         for (Ingredient ingredient : getCurrentIngredients()) {
             price += ingredient.getPrice();
         }
-        return PriceUtils.round(price);
+        return MathUtils.round(price);
     }
 
     public List<GroceryItem> getAvailableGroceryItems() {
@@ -88,5 +101,13 @@ public class MealManager {
     public void setCurrentRecipe(Recipe recipe) {
         Validators.validateNotNull(recipe, "recipe");
         this.currentRecipe = recipe;
+    }
+
+    public Map<GroceryItem, Integer> getShoppingList() {
+        return shoppingList.getShoppingList();
+    }
+
+    public double getActualPackages(GroceryItem item) {
+        return shoppingList.getActualPackages(item);
     }
 }
