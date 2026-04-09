@@ -1,7 +1,9 @@
 package mealmanager;
 
+import java.text.Collator;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
@@ -29,6 +31,7 @@ import javafx.scene.text.TextFlow;
 public class MealManagerController {
     private static final int MAX_SUGGESTIONS = 5;
     private static final int MAX_GROCERY_ROWS = 8;
+    private static final Collator collator = Collator.getInstance(Locale.of("no", "NO"));
 
     private MealManager mealManager = new MealManager();
 
@@ -81,8 +84,12 @@ public class MealManagerController {
         priceColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getPriceString()));
         unitPriceColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getUnitPriceString()));
         groceryItemTable.getItems().setAll(mealManager.getAvailableGroceryItems());
-        // Sort table by name column
-        FXCollections.sort(groceryItemTable.getItems(), Comparator.comparing(GroceryItem::getName));
+
+        // Sort table by name column upon initial launch
+        FXCollections.sort(groceryItemTable.getItems(), Comparator.comparing(GroceryItem::getName, collator));
+        // Sort using collator when clicking on column header
+        nameColumn.setComparator((a, b) -> collator.compare(a,b));
+
         groceryItemTable.getSelectionModel().select(groceryItemTable.getItems().get(0));
         updateImage();
 
