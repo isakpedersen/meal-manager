@@ -60,7 +60,9 @@
             <columns>
               <TableColumn fx:id="shoppingItemNameColumn" text="Vare" />
               <TableColumn fx:id="shoppingItemPackagesColumn" text="Antall pk." />
-              <TableColumn fx:id="shoppingItemActualPackagesColumn" text="Faktisk brukte pk." />
+              <TableColumn fx:id="shoppingItemActualPackagesColumn" text="Faktiske pk." />
+              <TableColumn fx:id="shoppingItemActualAmountColumn" text="Mengde" />
+              <TableColumn fx:id="shoppingItemPriceColumn" text="Pris" />
             </columns>
             <columnResizePolicy>
               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>

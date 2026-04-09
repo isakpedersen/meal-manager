@@ -110,4 +110,17 @@ public class MealManager {
     public double getActualPackages(GroceryItem item) {
         return shoppingList.getActualPackages(item);
     }
+
+    public String getActualAmountString(GroceryItem item) {
+        return shoppingList.getActualAmountString(item);
+    }
+
+    public String getShoppingListPriceString() {
+        return String.format("%.2f", shoppingList.getPrice()) + " kr";
+    }
+
+    public String getShoppingItemPriceString(GroceryItem item) {
+        double price = getShoppingList().get(item) * item.getPrice();
+        return String.format("%.2f", MathUtils.round(price)) + " kr";
+    }
 }

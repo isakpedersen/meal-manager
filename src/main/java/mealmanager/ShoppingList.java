@@ -19,7 +19,7 @@ public class ShoppingList {
 
     public void addIngredient(Ingredient ingredient) {
         Validators.validateNotNull(ingredient, "ingredient");
-        requiredAmounts.merge(ingredient.getGroceryItem(), ingredient.getAmount(), (a, b) -> MathUtils.round(a + b));
+        requiredAmounts.merge(ingredient.getGroceryItem(), ingredient.getAmount(), (a, b) -> MathUtils.round(a + b, 3));
     }
 
     public void removeIngredient(Ingredient ingredient) {
@@ -33,7 +33,7 @@ public class ShoppingList {
                 + item.getName() + ", only " + requiredAmounts.get(item) + " is available");
         }
 
-        requiredAmounts.put(item, MathUtils.round(requiredAmounts.get(item) - ingredient.getAmount()));
+        requiredAmounts.put(item, MathUtils.round(requiredAmounts.get(item) - ingredient.getAmount(), 3));
         if (requiredAmounts.get(item) == 0) {
             requiredAmounts.remove(item);
         }
@@ -56,7 +56,11 @@ public class ShoppingList {
     }
 
     public double getActualPackages(GroceryItem item) {
-        return MathUtils.round(getRequiredAmount(item) / item.getPackageContent());
+        return MathUtils.round(getRequiredAmount(item) / item.getPackageContent(), 3);
+    }
+
+    public String getActualAmountString(GroceryItem item) {
+        return getRequiredAmount(item) + " " + item.getMeasuringUnit();
     }
 
     public Map<GroceryItem, Integer> getShoppingList() {
@@ -66,5 +70,13 @@ public class ShoppingList {
             shoppingList.put(item, requiredPackages);
        }
        return shoppingList;
+    }
+
+    public double getPrice() {
+        double price = 0;
+        for (GroceryItem item : getShoppingList().keySet()) {
+            price += getShoppingList().get(item) * item.getPrice();
+        }
+        return MathUtils.round(price);
     }
 }

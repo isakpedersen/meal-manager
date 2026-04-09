@@ -52,10 +52,14 @@ public class MealManagerController {
     
     @FXML private ComboBox<MeasuringUnit> ingredientUnitBox;
 
+    @FXML private Label totalShoppingListPriceLabel;
+
     @FXML private TableView<GroceryItem> shoppingListTable;
     @FXML private TableColumn<GroceryItem, String> shoppingItemNameColumn;
     @FXML private TableColumn<GroceryItem, Integer> shoppingItemPackagesColumn;
     @FXML private TableColumn<GroceryItem, Double> shoppingItemActualPackagesColumn;
+    @FXML private TableColumn<GroceryItem, String> shoppingItemActualAmountColumn;
+    @FXML private TableColumn<GroceryItem, String> shoppingItemPriceColumn;
 
     @FXML private TableView<GroceryItem> groceryItemTable;
     @FXML private TableColumn<GroceryItem, String> eanColumn;
@@ -86,6 +90,8 @@ public class MealManagerController {
         shoppingItemNameColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getName()));
         shoppingItemPackagesColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(mealManager.getShoppingList().get(row.getValue())));
         shoppingItemActualPackagesColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(mealManager.getActualPackages(row.getValue())));
+        shoppingItemActualAmountColumn.setCellValueFactory(row -> new SimpleStringProperty(mealManager.getActualAmountString(row.getValue())));
+        shoppingItemPriceColumn.setCellValueFactory(row -> new SimpleStringProperty(mealManager.getShoppingItemPriceString(row.getValue())));
 
         // Initialize grocery item table
         eanColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getEan()));
@@ -294,6 +300,7 @@ public class MealManagerController {
 
     private void updateShoppingList() {
         shoppingListTable.getItems().setAll(mealManager.getShoppingList().keySet());
+        totalShoppingListPriceLabel.setText(mealManager.getShoppingListPriceString());
     }
 
     private void updateImage() {
