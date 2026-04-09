@@ -169,28 +169,45 @@ public class MealManagerController {
         });
 
         // Highlight query text in suggestions in bold
-        ingredientSearchList.setCellFactory(listView -> new ListCell<GroceryItem>() {
-            @Override
-            protected void updateItem(GroceryItem item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    String itemString = item.toString();
-                    int matchStart = itemString.toLowerCase().indexOf(currentQuery.toLowerCase());
-                    int matchEnd = matchStart + currentQuery.length();
+        ingredientSearchList.setCellFactory(listView -> {
+            ListCell<GroceryItem> cell = new ListCell<>() {
+                @Override
+                protected void updateItem(GroceryItem item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        String itemString = item.toString();
+                        int matchStart = itemString.toLowerCase().indexOf(currentQuery.toLowerCase());
+                        int matchEnd = matchStart + currentQuery.length();
 
-                    Text before = new Text(itemString.substring(0, matchStart));
-                    Text match = new Text(itemString.substring(matchStart, matchEnd));
-                    Text after = new Text(itemString.substring(matchEnd));
-                    match.setStyle("-fx-font-weight: bold");
-                    
-                    // Pack text in label to preserve css styling
-                    Label label = new Label();
-                    label.setGraphic(new TextFlow(before, match, after));
-                    setGraphic(label);
-                    setText(null);
+                        Text before = new Text(itemString.substring(0, matchStart));
+                        Text match = new Text(itemString.substring(matchStart, matchEnd));
+                        Text after = new Text(itemString.substring(matchEnd));
+                        match.setStyle("-fx-font-weight: bold");
+                        
+                        // Pack text in label to preserve css styling
+                        Label label = new Label();
+                        label.setGraphic(new TextFlow(before, match, after));
+                        setGraphic(label);
+                        setText(null);
+                    }
+                };
+            };
+
+            // Mouse triggers
+            cell.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !cell.isEmpty()) {
+                    confirmIngredientSuggestion();
                 }
+            });
+
+            return cell;
+        });
+
+        ingredientSearchList.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.TAB) {
+                confirmIngredientSuggestion();
             }
         });
 
@@ -203,15 +220,9 @@ public class MealManagerController {
                 ingredientDropdownScroller.scrollUp();
                 event.consume();
             } else if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.TAB) {
-                ingredientSearchField.setText(ingredientSearchList.getSelectionModel().getSelectedItem().toString());
-                ingredientSearchField.getStyleClass().add("ingredient-search-confirmed");
-                ingredientSearchList.setVisible(false);
-                handleIngredientSelection();
-                amountField.requestFocus();
+                confirmIngredientSuggestion();
             }
         });
-
-        // Mouse triggers
 
         // Run after UI is initialized:
         Platform.runLater(() -> {
@@ -281,6 +292,14 @@ public class MealManagerController {
         // select corresponding grocery item in grocery table
         groceryItemTable.getSelectionModel().select(selected);
         groceryItemTable.scrollTo(selected);
+    }
+
+    private void confirmIngredientSuggestion() {
+        ingredientSearchField.setText(ingredientSearchList.getSelectionModel().getSelectedItem().toString());
+        ingredientSearchField.getStyleClass().add("ingredient-search-confirmed");
+        ingredientSearchList.setVisible(false);
+        handleIngredientSelection();
+        amountField.requestFocus();
     }
 
     private void updateRecipe() {
