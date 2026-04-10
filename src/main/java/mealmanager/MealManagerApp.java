@@ -31,6 +31,7 @@ public class MealManagerApp extends Application {
         primaryStage.setTitle("Meal Manager");
         scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
         primaryStage.setScene(scene);
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 }

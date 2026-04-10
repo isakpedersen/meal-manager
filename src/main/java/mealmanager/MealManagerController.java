@@ -43,9 +43,7 @@ public class MealManagerController {
     private MealManager mealManager = new MealManager();
 
     @FXML private ComboBox<Recipe> recipeBox;
-    
-    @FXML private Label currentRecipeLabel;
-    
+
     @FXML private ListView<Ingredient> ingredientList;
     
     @FXML private Label totalPriceLabel;
@@ -88,7 +86,7 @@ public class MealManagerController {
         ingredientDropdownScroller = new Scroller(ingredientSearchList, MAX_SUGGESTIONS);
         updateRecipe();
         updateRecipes();
-    
+        
         ingredientList.setOnKeyPressed(event -> {
             // DELETE deletes selected ingredients
             if (event.getCode() == KeyCode.DELETE) {
@@ -106,18 +104,18 @@ public class MealManagerController {
                 ingredientList.getSelectionModel().selectAll();
             }
         });
-
+        
         ingredientList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             ingredientList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         });
-
+        
         // Initialize shopping list table
         shoppingItemNameColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getName()));
         shoppingItemPackagesColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(mealManager.getShoppingList().get(row.getValue())));
         shoppingItemActualPackagesColumn.setCellValueFactory(row -> new SimpleObjectProperty<>(mealManager.getActualPackages(row.getValue())));
         shoppingItemActualAmountColumn.setCellValueFactory(row -> new SimpleStringProperty(mealManager.getActualAmountString(row.getValue())));
         shoppingItemPriceColumn.setCellValueFactory(row -> new SimpleStringProperty(mealManager.getShoppingItemPriceString(row.getValue())));
-
+        
         // Initialize grocery item table
         eanColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getEan()));
         nameColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getName()));
@@ -125,24 +123,26 @@ public class MealManagerController {
         priceColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getPriceString()));
         unitPriceColumn.setCellValueFactory(row -> new SimpleStringProperty(row.getValue().getUnitPriceString()));
         groceryItemTable.getItems().setAll(mealManager.getAvailableGroceryItems());
-
+        
         // Sort table by name column upon initial launch
         FXCollections.sort(groceryItemTable.getItems(), Comparator.comparing(GroceryItem::getName, collator));
         // Sort using collator when clicking on column header
         nameColumn.setComparator((a, b) -> collator.compare(a,b));
-
+        
         groceryItemTable.getSelectionModel().select(groceryItemTable.getItems().get(0));
         updateImage();
-
+        
         // Update product image when selecting grocery items 
         groceryItemTable.getSelectionModel().selectedItemProperty().addListener(
             (obs, oldVal, newVal) -> {
                 if (newVal != null && newVal != oldVal) updateImage();
             }
         );
-
+        
         // Configure listener for ingredient search box
         ingredientSearchField.textProperty().addListener((obs, oldVal, query) -> {
+            ingredientSearchField.setPromptText("Søk etter ingrediens...");
+            ingredientSearchField.setStyle("");
             currentQuery = query;
             ingredientSearchField.getStyleClass().remove("ingredient-search-confirmed");
             
@@ -150,9 +150,9 @@ public class MealManagerController {
                 clearSearch();
                 return;
             };
-
+            
             GroceryItem lastSelected = getSelectedSuggestion();
-
+            
             // Load and filter dropdown list
             List<GroceryItem> filteredSearchList = mealManager.getAvailableGroceryItems().stream()
             .filter(groceryItem -> {
@@ -181,18 +181,18 @@ public class MealManagerController {
                 clearSearch();
                 return;
             }
-
+            
             if (!filteredSearchList.contains(lastSelected)) {
                 setSelectedSuggestionIndex(0);
             } else {
                 setSelectedSuggestionIndex(filteredSearchList.indexOf(lastSelected));
             }
-
+            
             ingredientSearchList.setVisible(true);
-
+            
             ingredientDropdownScroller.refresh();
         });
-
+        
         // Highlight query text in suggestions in bold
         ingredientSearchList.setCellFactory(listView -> {
             ListCell<GroceryItem> cell = new ListCell<>() {
@@ -205,7 +205,7 @@ public class MealManagerController {
                         String itemString = item.toString();
                         int matchStart = itemString.toLowerCase().indexOf(currentQuery.toLowerCase());
                         int matchEnd = matchStart + currentQuery.length();
-
+                        
                         Text before = new Text(itemString.substring(0, matchStart));
                         Text match = new Text(itemString.substring(matchStart, matchEnd));
                         Text after = new Text(itemString.substring(matchEnd));
@@ -219,23 +219,23 @@ public class MealManagerController {
                     }
                 };
             };
-
+            
             // Mouse triggers
             cell.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !cell.isEmpty()) {
                     confirmIngredientSuggestion();
                 }
             });
-
+            
             return cell;
         });
-
+        
         ingredientSearchList.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.TAB) {
                 confirmIngredientSuggestion();
             }
         });
-
+        
         // Keyboard triggers
         ingredientSearchField.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.DOWN) {
@@ -249,37 +249,51 @@ public class MealManagerController {
             }
         });
 
-        amountField.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                ingredientUnitBox.requestFocus();
-            }
+        amountField.textProperty().addListener((obs, oldVal, newVal) -> {
+            amountField.setPromptText("Fyll inn mengde");
+            amountField.setStyle("");
         });
 
+        amountField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                if (!ingredientUnitBox.isDisabled()) {
+                    ingredientUnitBox.requestFocus();
+                } else {
+                    addIngredientButton.requestFocus();
+                }
+            }
+        });
+        
         ingredientUnitBox.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.SPACE) {
                 ingredientUnitBox.show();
             }
         });
-
+        
         // Run after UI is initialized:
         Platform.runLater(() -> {
             AnchorPane.setTopAnchor(ingredientSearchList, ingredientSearchField.getHeight());
             ingredientSearchList.setPrefWidth(ingredientSearchField.getWidth());
             ingredientSearchList.setMaxHeight(ingredientDropdownScroller.getMaxSuggestions() * 42.0 + 2.0);
             groceryItemTable.setMaxHeight(MAX_GROCERY_ROWS * 42.0 + 40.0);
+
+            if (mealManager.getCurrentRecipe().toString().equals("Tom oppskrift") && mealManager.getCurrentIngredients().isEmpty()) {
+                editCurrentRecipe();
+            }
         });
     }
-
+    
     @FXML
     private void handleRecipeSelection() {
         mealManager.setCurrentRecipe(recipeBox.getValue());
         updateRecipe();
     }
-
+    
     @FXML
     private void createNewRecipe() {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Ny oppskrift");
+        dialog.setHeaderText("Ny oppskrift");
 
         TextField nameField = new TextField();
         Spinner<Integer> servingsSpinner = new Spinner<>(1, 20, 4);
@@ -319,6 +333,7 @@ public class MealManagerController {
     private void editCurrentRecipe() {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Ny oppskrift");
+        dialog.setHeaderText("Endre oppskrift");
 
         TextField nameField = new TextField(mealManager.getCurrentRecipe().getName());
         Spinner<Integer> servingsSpinner = new Spinner<>(1, 20, mealManager.getCurrentRecipe().getServings());
@@ -372,23 +387,36 @@ public class MealManagerController {
     
     @FXML
     private void addIngredientToCurrentRecipe() {
-        GroceryItem selectedItem = ingredientSearchList.getSelectionModel().getSelectedItem();
-        Double amountInCorrectUnit = Double.parseDouble(amountField.getText()) * ingredientUnitBox.getValue().getConversionFactor(selectedItem.getMeasuringUnit());
-        Ingredient ingredient = new Ingredient(selectedItem, amountInCorrectUnit);
-
-        mealManager.addIngredientToCurrentRecipe(ingredient);
-        updateRecipe();
-
-        // Reset ingredient input and prompt for new ingredient
-        ingredientSearchField.setText("");
-        amountField.setText("");
-        ingredientSearchField.requestFocus();
+        if (!amountField.getText().matches("[0-9]+")) {
+            amountField.setText("");
+            amountField.setPromptText("Skriv et gyldig tall");
+            amountField.setStyle("-fx-prompt-text-fill: red;");
+        }
+        if (ingredientSearchField.getText().isBlank()) {
+            ingredientSearchField.setPromptText("Velg en ingrediens");
+            ingredientSearchField.setStyle("-fx-prompt-text-fill: red;");
+        } else {
+            GroceryItem selectedItem = ingredientSearchList.getSelectionModel().getSelectedItem();
+            Double amountInCorrectUnit = Double.parseDouble(amountField.getText()) * ingredientUnitBox.getValue().getConversionFactor(selectedItem.getMeasuringUnit());
+            Ingredient ingredient = new Ingredient(selectedItem, amountInCorrectUnit);
+    
+            mealManager.addIngredientToCurrentRecipe(ingredient);
+            updateRecipe();
+    
+            // Reset ingredient input and prompt for new ingredient
+            ingredientSearchField.setText("");
+            amountField.setText("");
+            ingredientSearchField.requestFocus();
+        }
     }
 
     private void handleIngredientSelection() {
         GroceryItem selected = getSelectedSuggestion();
         MeasuringUnit unit = selected.getMeasuringUnit();
         ingredientUnitBox.setValue(unit);
+        if (unit.getConvertibleUnits().size() <= 1) {
+            ingredientUnitBox.setDisable(true);
+        }
         ingredientUnitBox.getItems().setAll(unit.getConvertibleUnits());
         // select corresponding grocery item in grocery table
         groceryItemTable.getSelectionModel().select(selected);
@@ -404,7 +432,6 @@ public class MealManagerController {
     }
 
     private void updateRecipe() {
-        currentRecipeLabel.setText("Valgt oppskrift: " + mealManager.getCurrentRecipe().toString());
         ingredientList.getItems().setAll(mealManager.getCurrentIngredients());
 
         totalPriceLabel.setText(mealManager.getCurrentRecipePriceString());

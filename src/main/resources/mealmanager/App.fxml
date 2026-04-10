@@ -30,8 +30,8 @@
       <items>
         <VBox styleClass="content-pane" spacing="10" HBox.hgrow="ALWAYS">
           <Label styleClass="title-3" text="Oppskrifter" />
-          <Label fx:id="currentRecipeLabel" styleClass="" />
-          <HBox>
+          <Label text="Velg oppskrift:" />
+          <HBox spacing="10" >
             <ComboBox fx:id="recipeBox" onAction="#handleRecipeSelection"/>
             <Button fx:id="createNewRecipeButton" onAction="#createNewRecipe" text="Lag ny oppskrift"/>
             <Button fx:id="createNewRecipeButton" onAction="#editCurrentRecipe" text="Endre oppskrift"/>
@@ -47,12 +47,12 @@
             <Label HBox.hgrow="ALWAYS" maxWidth="Infinity" fx:id="pricePerServingLabel"/>
           </HBox>
           <Label text="Legg til ingrediens:"/>
-          <HBox>
+          <HBox spacing="10">
             <AnchorPane prefWidth="250.0">
               <TextField fx:id="ingredientSearchField" promptText="Søk etter ingrediens..." AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
               <ListView fx:id="ingredientSearchList" visible="false" AnchorPane.topAnchor="30.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
             </AnchorPane>
-            <TextField fx:id="amountField"/>
+            <TextField fx:id="amountField" promptText="Fyll inn mengde"/>
             <ComboBox fx:id="ingredientUnitBox"/>
             <Button fx:id="addIngredientButton" onAction="#addIngredientToCurrentRecipe" text="Legg til"/>
           </HBox>
