@@ -53,7 +53,7 @@
               <ListView fx:id="ingredientSearchList" visible="false" AnchorPane.topAnchor="30.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
             </AnchorPane>
             <TextField fx:id="amountField"/>
-            <ComboBox fx:id="ingredientUnitBox" onAction="#handleUnitSelection"/>
+            <ComboBox fx:id="ingredientUnitBox"/>
             <Button fx:id="addIngredientButton" onAction="#addIngredientToCurrentRecipe" text="Legg til"/>
           </HBox>
         </VBox>

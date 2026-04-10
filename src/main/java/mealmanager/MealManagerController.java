@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
@@ -61,6 +62,8 @@ public class MealManagerController {
     @FXML private TextField amountField;
     
     @FXML private ComboBox<MeasuringUnit> ingredientUnitBox;
+
+    @FXML private Button addIngredientButton;
 
     @FXML private Label totalShoppingListPriceLabel;
 
@@ -253,8 +256,8 @@ public class MealManagerController {
         });
 
         ingredientUnitBox.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                addIngredientToCurrentRecipe();
+            if (event.getCode() == KeyCode.ENTER || event.getCode() == KeyCode.SPACE) {
+                ingredientUnitBox.show();
             }
         });
 
@@ -366,11 +369,6 @@ public class MealManagerController {
         ingredientSearchField.setText("");
         amountField.setText("");
         ingredientSearchField.requestFocus();
-    }
-    
-    @FXML
-    private void handleUnitSelection() {
-        
     }
 
     private void handleIngredientSelection() {
