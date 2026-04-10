@@ -38,8 +38,12 @@
           </HBox>
           <ListView fx:id="ingredientList"/>
           <HBox>
-            <Label text="Totalpris:"/>
-            <Label fx:id="totalPriceLabel"/>
+            <Label text="Totalpris: "/>
+            <Label HBox.hgrow="ALWAYS" maxWidth="Infinity" fx:id="totalPriceLabel"/>
+            <Label text="Porsjoner: "/>
+            <Label HBox.hgrow="ALWAYS" maxWidth="Infinity" fx:id="servingsLabel"/>
+            <Label text="Pris per porsjon: "/>
+            <Label HBox.hgrow="ALWAYS" maxWidth="Infinity" fx:id="pricePerServingLabel"/>
           </HBox>
           <Label text="Legg til ingrediens:"/>
           <HBox>

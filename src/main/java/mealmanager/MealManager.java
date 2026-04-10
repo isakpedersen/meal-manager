@@ -54,8 +54,8 @@ public class MealManager {
         shoppingList.removeIngredient(ingredient);
     }
 
-    public void createNewRecipe(String name) {
-        Recipe newRecipe = new Recipe(name, new ArrayList<>(), 1);
+    public void createNewRecipe(String name, int servings) {
+        Recipe newRecipe = new Recipe(name, new ArrayList<>(), servings);
         recipes.add(newRecipe);
         setCurrentRecipe(newRecipe);
     }
@@ -75,12 +75,12 @@ public class MealManager {
         saveRecipes();
     }
 
-    public Double getCurrentRecipePrice() {
-        double price = 0;
-        for (Ingredient ingredient : getCurrentIngredients()) {
-            price += ingredient.getPrice();
-        }
-        return MathUtils.round(price);
+    public String getCurrentRecipePriceString() {
+        return String.format("%.2f", getCurrentRecipe().getPrice()) + " kr";
+    }
+
+    public String getCurrentRecipePricePerServingString() {
+        return String.format("%.2f", getCurrentRecipe().getPricePerServing()) + " kr";
     }
 
     public List<GroceryItem> getAvailableGroceryItems() {

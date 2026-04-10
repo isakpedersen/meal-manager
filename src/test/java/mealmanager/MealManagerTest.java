@@ -29,7 +29,7 @@ public class MealManagerTest {
 
     @Test
     public void testModifyIngredientsInCurrentRecipe() {
-        mealManager.createNewRecipe("Recipe");
+        mealManager.createNewRecipe("Recipe", 1);
         mealManager.addIngredientToCurrentRecipe(pastaIngredient);
         mealManager.addIngredientToCurrentRecipe(riceIngredient);
         assertEquals(List.of(pastaIngredient, riceIngredient), mealManager.getCurrentIngredients());
@@ -41,7 +41,7 @@ public class MealManagerTest {
     @Test
     public void testCreateNewRecipe() {
         int size = mealManager.getRecipes().size();
-        mealManager.createNewRecipe("Recipe");
+        mealManager.createNewRecipe("Recipe", 1);
         assertEquals("Recipe", mealManager.getRecipe(size).toString());
         assertEquals("Recipe", mealManager.getCurrentRecipe().toString());
     }
@@ -49,17 +49,17 @@ public class MealManagerTest {
     @Test
     public void testDeleteCurrentRecipe() {
         List<Recipe> recipesBefore = new ArrayList<>(mealManager.getRecipes());
-        mealManager.createNewRecipe("Recipe 2");
+        mealManager.createNewRecipe("Recipe 2", 1);
         mealManager.deleteCurrentRecipe();
         assertEquals(recipesBefore, mealManager.getRecipes());
     }
 
     @Test
     public void testGetCurrentRecipePrice() {
-        mealManager.createNewRecipe("Recipe");
+        mealManager.createNewRecipe("Recipe", 1);
         mealManager.addIngredientToCurrentRecipe(pastaIngredient);
         mealManager.addIngredientToCurrentRecipe(riceIngredient);
-        assertEquals(3.5, mealManager.getCurrentRecipePrice());
+        assertEquals("3.50 kr", mealManager.getCurrentRecipePriceString());
     }
 
     @Test
@@ -77,16 +77,16 @@ public class MealManagerTest {
 
     @Test
     public void testGetCurrentRecipe() {
-        mealManager.createNewRecipe("Recipe");
+        mealManager.createNewRecipe("Recipe", 1);
         assertEquals("Recipe", mealManager.getCurrentRecipe().toString());
     }
 
     @Test
     public void testSetCurrentRecipe() {
         int size = mealManager.getRecipes().size();
-        mealManager.createNewRecipe("Recipe");
+        mealManager.createNewRecipe("Recipe", 1);
         Recipe recipe = mealManager.getRecipe(size);
-        mealManager.createNewRecipe("Recipe 2");
+        mealManager.createNewRecipe("Recipe 2", 1);
         Recipe recipe2 = mealManager.getRecipe(size + 1);
         assertEquals(recipe2, mealManager.getCurrentRecipe());
         mealManager.setCurrentRecipe(recipe);

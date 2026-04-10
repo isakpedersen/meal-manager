@@ -44,6 +44,18 @@ public class Recipe {
         return servings;
     }
 
+    public double getPrice() {
+        double price = 0;
+        for (Ingredient ingredient : getIngredients()) {
+            price += ingredient.getPrice();
+        }
+        return MathUtils.round(price);
+    }
+
+    public double getPricePerServing() {
+        return MathUtils.round(getPrice() / getServings());
+    }
+
     @Override
     public String toString() {
         return getName();

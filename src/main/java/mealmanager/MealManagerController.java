@@ -11,22 +11,26 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.Spinner;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -44,6 +48,10 @@ public class MealManagerController {
     @FXML private ListView<Ingredient> ingredientList;
     
     @FXML private Label totalPriceLabel;
+
+    @FXML private Label servingsLabel;
+
+    @FXML private Label pricePerServingLabel;
 
     @FXML private TextField ingredientSearchField;
     @FXML private ListView<GroceryItem> ingredientSearchList;
@@ -253,15 +261,45 @@ public class MealManagerController {
         updateRecipe();
     }
 
+    // @FXML
+    // private void createNewRecipe() {
+    //     TextInputDialog dialog = new TextInputDialog();
+    //     dialog.setTitle("Ny oppskrift");
+    //     dialog.setHeaderText(null);
+    //     dialog.setGraphic(null);
+    //     dialog.setContentText("Navn på oppskrift:");
+    //     dialog.showAndWait().ifPresent(name -> {
+    //         mealManager.createNewRecipe(name);
+    //     });
+    //     updateRecipe();
+    //     updateRecipes();
+    // }
+
     @FXML
     private void createNewRecipe() {
-        TextInputDialog dialog = new TextInputDialog();
+        Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Ny oppskrift");
-        dialog.setHeaderText(null);
-        dialog.setGraphic(null);
-        dialog.setContentText("Navn på oppskrift:");
-        dialog.showAndWait().ifPresent(name -> {
-            mealManager.createNewRecipe(name);
+
+        TextField nameField = new TextField();
+        Spinner<Integer> servingsSpinner = new Spinner<>(1, 20, 4);
+        servingsSpinner.setPrefWidth(80);
+
+        HBox content = new HBox(10,
+            new Label("Navn:"), nameField,
+            new Label("Porsjoner"), servingsSpinner
+        );
+        content.setPadding(new Insets(20));
+        content.setAlignment(Pos.CENTER);
+
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.showAndWait().ifPresent(result -> {
+            if (result == ButtonType.OK) {
+                String name = nameField.getText();
+                int servings = servingsSpinner.getValue();
+                mealManager.createNewRecipe(name, servings);
+            }
         });
         updateRecipe();
         updateRecipes();
@@ -319,7 +357,11 @@ public class MealManagerController {
     private void updateRecipe() {
         currentRecipeLabel.setText("Valgt oppskrift: " + mealManager.getCurrentRecipe().toString());
         ingredientList.getItems().setAll(mealManager.getCurrentIngredients());
-        totalPriceLabel.setText(mealManager.getCurrentRecipePrice().toString());
+
+        totalPriceLabel.setText(mealManager.getCurrentRecipePriceString());
+        servingsLabel.setText(String.valueOf(mealManager.getCurrentRecipe().getServings()));
+        pricePerServingLabel.setText(mealManager.getCurrentRecipePricePerServingString());
+
         mealManager.saveRecipes();
         ingredientList.scrollTo(ingredientList.getItems().size() - 1);
         ingredientList.getSelectionModel().select(ingredientList.getItems().size() - 1);
