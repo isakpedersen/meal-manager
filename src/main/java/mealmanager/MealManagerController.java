@@ -246,6 +246,18 @@ public class MealManagerController {
             }
         });
 
+        amountField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                ingredientUnitBox.requestFocus();
+            }
+        });
+
+        ingredientUnitBox.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                addIngredientToCurrentRecipe();
+            }
+        });
+
         // Run after UI is initialized:
         Platform.runLater(() -> {
             AnchorPane.setTopAnchor(ingredientSearchList, ingredientSearchField.getHeight());
@@ -349,13 +361,18 @@ public class MealManagerController {
 
         mealManager.addIngredientToCurrentRecipe(ingredient);
         updateRecipe();
+
+        // Reset ingredient input and prompt for new ingredient
+        ingredientSearchField.setText("");
+        amountField.setText("");
+        ingredientSearchField.requestFocus();
     }
     
     @FXML
     private void handleUnitSelection() {
         
     }
-    
+
     private void handleIngredientSelection() {
         GroceryItem selected = getSelectedSuggestion();
         MeasuringUnit unit = selected.getMeasuringUnit();

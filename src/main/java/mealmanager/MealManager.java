@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 
 public class MealManager {
@@ -21,7 +22,9 @@ public class MealManager {
             availableGroceryItems = new ArrayList<>(fileHandler.loadGroceryItems());
             recipes = new ArrayList<>(fileHandler.loadRecipes(availableGroceryItems));
         } catch (IOException e) {
-            return;
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Kunne ikke laste data: " + e.getMessage());
+            alert.showAndWait();
+            System.exit(1);
         }
         setCurrentRecipe(recipes.get(0));
 

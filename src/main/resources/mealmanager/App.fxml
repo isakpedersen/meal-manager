@@ -52,15 +52,17 @@
               <TextField fx:id="ingredientSearchField" promptText="Søk etter ingrediens..." AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
               <ListView fx:id="ingredientSearchList" visible="false" AnchorPane.topAnchor="30.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
             </AnchorPane>
-            <TextField fx:id="amountField" onAction="#addIngredientToCurrentRecipe"/>
+            <TextField fx:id="amountField"/>
             <ComboBox fx:id="ingredientUnitBox" onAction="#handleUnitSelection"/>
             <Button fx:id="addIngredientButton" onAction="#addIngredientToCurrentRecipe" text="Legg til"/>
           </HBox>
         </VBox>
         <VBox styleClass="content-pane" spacing="10">
           <Label styleClass="title-3" text="Handleliste" />
-          <Label text="Totalpris:"/>
-          <Label fx:id="totalShoppingListPriceLabel"/>
+          <HBox>
+            <Label text="Totalpris: "/>
+            <Label fx:id="totalShoppingListPriceLabel"/>
+          </HBox>
           <TableView fx:id="shoppingListTable" fixedCellSize="42" >
             <columns>
               <TableColumn fx:id="shoppingItemNameColumn" text="Vare" />
