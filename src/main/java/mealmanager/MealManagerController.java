@@ -294,6 +294,13 @@ public class MealManagerController {
 
         dialog.getDialogPane().setContent(content);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+        okButton.setDisable(true);
+
+        nameField.textProperty().addListener((obs, oldVal, newVal) -> {
+            okButton.setDisable(newVal.isBlank());
+            
+        });
 
         Platform.runLater(() -> nameField.requestFocus());
 
@@ -326,6 +333,13 @@ public class MealManagerController {
 
         dialog.getDialogPane().setContent(content);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+        okButton.setDisable(false);
+
+        nameField.textProperty().addListener((obs, oldVal, newVal) -> {
+            okButton.setDisable(newVal.isBlank());
+            
+        });
 
         Platform.runLater(() -> nameField.requestFocus());
 
