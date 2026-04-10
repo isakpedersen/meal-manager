@@ -387,15 +387,7 @@ public class MealManagerController {
     
     @FXML
     private void addIngredientToCurrentRecipe() {
-        if (!amountField.getText().matches("[0-9]+")) {
-            amountField.setText("");
-            amountField.setPromptText("Skriv et gyldig tall");
-            amountField.setStyle("-fx-prompt-text-fill: red;");
-        }
-        if (ingredientSearchField.getText().isBlank()) {
-            ingredientSearchField.setPromptText("Velg en ingrediens");
-            ingredientSearchField.setStyle("-fx-prompt-text-fill: red;");
-        } else {
+        if (amountField.getText().matches("[0-9]+") && !ingredientSearchField.getText().isBlank()) {
             GroceryItem selectedItem = ingredientSearchList.getSelectionModel().getSelectedItem();
             Double amountInCorrectUnit = Double.parseDouble(amountField.getText()) * ingredientUnitBox.getValue().getConversionFactor(selectedItem.getMeasuringUnit());
             Ingredient ingredient = new Ingredient(selectedItem, amountInCorrectUnit);
@@ -407,6 +399,16 @@ public class MealManagerController {
             ingredientSearchField.setText("");
             amountField.setText("");
             ingredientSearchField.requestFocus();
+            return;
+        }
+        if (!amountField.getText().matches("[0-9]+")) {
+            amountField.setText("");
+            amountField.setPromptText("Skriv et gyldig tall");
+            amountField.setStyle("-fx-prompt-text-fill: red;");
+        }
+        if (ingredientSearchField.getText().isBlank()) {
+            ingredientSearchField.setPromptText("Velg en ingrediens");
+            ingredientSearchField.setStyle("-fx-prompt-text-fill: red;");
         }
     }
 

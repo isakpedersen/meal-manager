@@ -71,6 +71,4 @@ public class Recipe implements Iterable<Ingredient> {
     public String toString() {
         return getName();
     }
-
 }
-
