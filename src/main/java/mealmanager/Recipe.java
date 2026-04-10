@@ -1,9 +1,10 @@
 package mealmanager;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class Recipe {
+public class Recipe implements Iterable<Ingredient> {
     private String name;
     private List<Ingredient> ingredients;
     private int servings;
@@ -59,6 +60,11 @@ public class Recipe {
 
     public double getPricePerServing() {
         return MathUtils.round(getPrice() / getServings());
+    }
+
+    @Override
+    public Iterator<Ingredient> iterator() {
+        return ingredients.iterator();
     }
 
     @Override

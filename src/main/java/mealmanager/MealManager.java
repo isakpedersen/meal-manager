@@ -29,7 +29,7 @@ public class MealManager {
         setCurrentRecipe(recipes.get(0));
 
         for (Recipe recipe : recipes) {
-            for (Ingredient ingredient : recipe.getIngredients()) {
+            for (Ingredient ingredient : recipe) {
                 shoppingList.addIngredient(ingredient);
             }
         }

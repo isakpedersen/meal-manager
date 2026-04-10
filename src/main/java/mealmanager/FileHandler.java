@@ -73,7 +73,7 @@ public class FileHandler {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(RECIPE_FILE))) {
             for (Recipe recipe : recipes) {
                 writer.write("RECIPE:" + recipe.getName() + ":" + recipe.getServings() + "\n");
-                for (Ingredient ingredient : recipe.getIngredients()) {
+                for (Ingredient ingredient : recipe) {
                     writer.write("INGREDIENT:" + ingredient.getGroceryItem().getEan() + ":" + ingredient.getAmount() + "\n");
                 }
                 writer.write("END_RECIPE\n");
