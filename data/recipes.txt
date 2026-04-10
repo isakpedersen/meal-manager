@@ -1,2 +1,2 @@
-RECIPE:Oppskrift 1:4
+RECIPE:Tom oppskrift:1
 END_RECIPE

@@ -1,6 +1,7 @@
 package mealmanager;
 
 import java.text.Collator;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +17,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -77,13 +79,25 @@ public class MealManagerController {
         updateRecipes();
     
         ingredientList.setOnKeyPressed(event -> {
+            // DELETE deletes selected ingredients
             if (event.getCode() == KeyCode.DELETE) {
-                Ingredient selected = ingredientList.getSelectionModel().getSelectedItem();
-                if (selected != null) {
-                    mealManager.removeIngredientFromCurrentRecipe(selected);
+                List<Ingredient> selectedItems = new ArrayList<>(ingredientList.getSelectionModel().getSelectedItems());
+                if (!selectedItems.isEmpty()) {
+                    for (Ingredient ingredient : selectedItems) {
+                        mealManager.removeIngredientFromCurrentRecipe(ingredient);
+                    }
+                    ingredientList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
                     updateRecipe();
                 }
+                // CTRL + A selects all ingredients
+            } else if (event.isControlDown() && event.getCode() == KeyCode.A) {
+                ingredientList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+                ingredientList.getSelectionModel().selectAll();
             }
+        });
+
+        ingredientList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            ingredientList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         });
 
         // Initialize shopping list table
@@ -311,9 +325,10 @@ public class MealManagerController {
         ingredientList.getSelectionModel().select(ingredientList.getItems().size() - 1);
         updateShoppingList();
     }
-
+    
     private void updateRecipes() {
         recipeBox.getItems().setAll(mealManager.getRecipes());
+        recipeBox.getSelectionModel().select(mealManager.getCurrentRecipe());
         mealManager.saveRecipes();
     }
 

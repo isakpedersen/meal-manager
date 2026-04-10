@@ -65,7 +65,13 @@ public class MealManager {
             removeIngredientFromCurrentRecipe(ingredient);
         }
         recipes.remove(getCurrentRecipe());
-        setCurrentRecipe(getRecipe(0));
+        if (!getRecipes().isEmpty()) {
+            setCurrentRecipe(getRecipe(0));
+        } else {
+            Recipe blankRecipe = new Recipe("Tom oppskrift", new ArrayList<>(), 1);
+            recipes.add(blankRecipe);
+            setCurrentRecipe(blankRecipe);
+        }
         saveRecipes();
     }
 

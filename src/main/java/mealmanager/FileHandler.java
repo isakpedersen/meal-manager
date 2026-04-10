@@ -62,7 +62,7 @@ public class FileHandler {
             }
         }
         if (recipes.isEmpty()) {
-            recipes.add(new Recipe("Empty recipe", List.of(), 1));
+            recipes.add(new Recipe("Tom oppskrift", new ArrayList<>(), 1));
         }
         return recipes;
     }
