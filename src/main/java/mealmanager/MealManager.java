@@ -39,7 +39,9 @@ public class MealManager {
         try {
             fileHandler.saveRecipes(recipes);
         } catch (IOException e) {
-            return;
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Kunne ikke lagre data: " + e.getMessage());
+            alert.showAndWait();
+            System.exit(1);
         }
     }
 
