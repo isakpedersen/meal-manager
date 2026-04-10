@@ -60,6 +60,11 @@ public class MealManager {
         setCurrentRecipe(newRecipe);
     }
 
+    public void editCurrentRecipe(String name, int servings) {
+        getCurrentRecipe().setName(name);
+        getCurrentRecipe().setServings(servings);
+    }
+
     public void deleteCurrentRecipe() {
         for (Ingredient ingredient : getCurrentRecipe().getIngredients()) {
             removeIngredientFromCurrentRecipe(ingredient);

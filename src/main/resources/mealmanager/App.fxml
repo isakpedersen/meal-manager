@@ -34,6 +34,7 @@
           <HBox>
             <ComboBox fx:id="recipeBox" onAction="#handleRecipeSelection"/>
             <Button fx:id="createNewRecipeButton" onAction="#createNewRecipe" text="Lag ny oppskrift"/>
+            <Button fx:id="createNewRecipeButton" onAction="#editCurrentRecipe" text="Endre oppskrift"/>
             <Button fx:id="deleteRecipeButton" onAction="#deleteCurrentRecipe" text="Slett oppskrift"/>
           </HBox>
           <ListView fx:id="ingredientList"/>

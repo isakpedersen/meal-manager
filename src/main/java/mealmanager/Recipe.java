@@ -44,6 +44,11 @@ public class Recipe {
         return servings;
     }
 
+    public void setServings(int servings) {
+        Validators.validateIntPositive(servings, "servings");
+        this.servings = servings;
+    }
+
     public double getPrice() {
         double price = 0;
         for (Ingredient ingredient : getIngredients()) {

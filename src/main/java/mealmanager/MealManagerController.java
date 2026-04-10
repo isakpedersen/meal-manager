@@ -261,20 +261,6 @@ public class MealManagerController {
         updateRecipe();
     }
 
-    // @FXML
-    // private void createNewRecipe() {
-    //     TextInputDialog dialog = new TextInputDialog();
-    //     dialog.setTitle("Ny oppskrift");
-    //     dialog.setHeaderText(null);
-    //     dialog.setGraphic(null);
-    //     dialog.setContentText("Navn på oppskrift:");
-    //     dialog.showAndWait().ifPresent(name -> {
-    //         mealManager.createNewRecipe(name);
-    //     });
-    //     updateRecipe();
-    //     updateRecipes();
-    // }
-
     @FXML
     private void createNewRecipe() {
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -294,11 +280,45 @@ public class MealManagerController {
         dialog.getDialogPane().setContent(content);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
+        Platform.runLater(() -> nameField.requestFocus());
+
         dialog.showAndWait().ifPresent(result -> {
             if (result == ButtonType.OK) {
                 String name = nameField.getText();
                 int servings = servingsSpinner.getValue();
                 mealManager.createNewRecipe(name, servings);
+            }
+        });
+        updateRecipe();
+        updateRecipes();
+    }
+
+    @FXML
+    private void editCurrentRecipe() {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Ny oppskrift");
+
+        TextField nameField = new TextField(mealManager.getCurrentRecipe().getName());
+        Spinner<Integer> servingsSpinner = new Spinner<>(1, 20, mealManager.getCurrentRecipe().getServings());
+        servingsSpinner.setPrefWidth(80);
+
+        HBox content = new HBox(10,
+            new Label("Navn:"), nameField,
+            new Label("Porsjoner"), servingsSpinner
+        );
+        content.setPadding(new Insets(20));
+        content.setAlignment(Pos.CENTER);
+
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        Platform.runLater(() -> nameField.requestFocus());
+
+        dialog.showAndWait().ifPresent(result -> {
+            if (result == ButtonType.OK) {
+                String name = nameField.getText();
+                int servings = servingsSpinner.getValue();
+                mealManager.editCurrentRecipe(name, servings);
             }
         });
         updateRecipe();
@@ -314,7 +334,7 @@ public class MealManagerController {
         alert.showAndWait().ifPresent(button -> {
             if (button == ButtonType.OK) {
                 mealManager.deleteCurrentRecipe();
-            } 
+            }
         });
         updateRecipe();
         updateRecipes();
