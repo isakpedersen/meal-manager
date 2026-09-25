@@ -1,0 +1,100 @@
+@startuml mealmanager
+
+left to right direction
+
+class GroceryItem {
+    - {readonly} String ean
+    - {readonly} String name
+    - {readonly} Quantity quantity
+    - double price
+
+    + GroceryItem(String, String, double, MeasuringUnit, double)
+    + double getUnitPrice(boolean)
+    + String getUnitPriceString()
+    + String getEan()
+    + String getName()
+    + Quantity getQuantity()
+    + double getPackageContent()
+    + MeasuringUnit getMeasuringUnit()
+    + double getPrice()
+    + String getPriceString()
+}
+
+class Ingredient {
+    - GroceryItem GroceryItem
+    - Quantity quantity
+
+    + Ingredient(GroceryItem, double)
+    + {static} void validateItem(GroceryItem)
+    + double getPrice()
+    + GroceryItem getGroceryItem()
+    + double getAmount()
+}
+
+enum MeasuringUnit {
+    GRAM
+    KG
+    ML
+    DL
+    LITER
+    STK
+    + double getConversionFactor(MeasuringUnit)
+    + List<MeasuringUnit> getConvertibleUnits()
+}
+
+class Quantity {
+    - {readonly} double amount
+    - {readonly} MeasuringUnit unit
+
+    + Quantity(double, MeasuringUnit)
+    + double getAmount()
+    + MeasuringUnit getUnit()
+}
+
+class Recipe {
+    - String name
+    - List<Ingredient> ingredients
+    - int servings
+
+    + Recipe(String, List<Ingredient>, int)
+    + void addIngredient(Ingredient)
+    + void removeIngredient(Ingredient)
+    + String getName()
+    + void setName(String)
+    + List<Ingredient> getIngredients()
+    + int getServings()
+    + void setServings(int)
+    + double getPrice()
+    + double getPricePerServing()
+}
+
+class ShoppingList {
+    - Map<GroceryItem, Double> requiredAmounts
+
+    + ShoppingList()
+    + ShoppingList(List<Ingredients>)
+    + void addIngredient(Ingredient)
+    + void removeIngredient(Ingredient)
+    + double getRequiredAmount(GroceryItem)
+    + int getRequiredPackages(GroceryItem)
+    + double getActualPackages(GroceryItem)
+    + String getActualAmountString(GroceryItem)
+    + Map<GroceryItem, Integer> getShoppingList()
+    + double getPrice()
+}
+
+interface Iterable<Ingredient>
+
+Recipe ..|> Iterable
+Recipe "1" *-- "0..*" Ingredient
+
+Ingredient "1" --> "1" GroceryItem
+Ingredient "1" *-- "1" Quantity
+
+Quantity "1" --> "1" MeasuringUnit
+
+GroceryItem "1" *-- "1" Quantity
+
+ShoppingList "1" o-- "0..*" GroceryItem
+
+@enduml
